@@ -83,7 +83,7 @@ class AppUI:
       font=Fonts.LABEL
     )
     self.btn_decrease_input.grid(row=2, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="nswe")
-    self.btn_decrease_input.bind("<Button-1>", self.decrease_size)
+    self.btn_decrease_input.bind("<Button-1>", self.decrease_input_size)
 
     ## adding decrease button
     self.btn_increase_input = ctk.CTkButton(
@@ -96,7 +96,7 @@ class AppUI:
       font=Fonts.LABEL
     )
     self.btn_increase_input.grid(row=2, column=1, padx=(Spacing.PADX, 0), pady=(0, Spacing.PADY), sticky="nswe")
-    self.btn_increase_input.bind("<Button-1>", self.increase_size)
+    self.btn_increase_input.bind("<Button-1>", self.increase_input_size)
   def __create_weights_section__(self):
     # Creating section title
     self.lbl_weights_title = ctk.CTkLabel(
@@ -153,7 +153,7 @@ class AppUI:
     self.lbl_dataset_title.grid(row=5, column=0, columnspan=2, pady=(0, Spacing.PADY), sticky="nswe")
 
     # Creating button for deleting rows
-    self.btd_delete_row = ctk.CTkButton(
+    self.btn_delete_row = ctk.CTkButton(
       master=self.widget_wrapper,
       text="Delete row",
       text_color=Colors.WHITE,
@@ -162,8 +162,8 @@ class AppUI:
       cursor="hand2",
       font=Fonts.LABEL
     )
-    self.btd_delete_row.grid(row=6, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="nswe")
-    self.btd_delete_row.bind("<Button-1>", self.delete_row)
+    self.btn_delete_row.grid(row=6, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="nswe")
+    self.btn_delete_row.bind("<Button-1>", self.delete_row)
 
     # Creating button for deleting rows
     self.btn_add_row = ctk.CTkButton(
@@ -207,6 +207,7 @@ class AppUI:
       "edit_cell"
     ))
     self.dataset_sheet.set_options(auto_resize_columns=True)
+    self.dataset_sheet.readonly_cells(column=0)
     self.dataset_sheet.edit_validation(self.validate_cell_entry)
     self.dataset_sheet.pack(fill="both", expand=True, padx=2, pady=(2, 3))
   def __create_calculations_section__(self):
@@ -249,8 +250,8 @@ class AppUI:
   
   # Method to run the application
   def run(self): pass
-  def decrease_size(self, event): pass
-  def increase_size(self, event): pass
+  def decrease_input_size(self, event): pass
+  def increase_input_size(self, event): pass
   def validate_cell_entry(self, event): pass
   def delete_row(self, event): pass
   def add_row(self, event): pass
