@@ -29,3 +29,9 @@ class App(AppUI):
     self.input_size += 1
     self.weights_sheet.insert_column(column=[0.0], idx=self.input_size)
     self.dataset_sheet.insert_column(column=dataset_filler_values, idx=self.input_size)
+
+  def validate_cell_entry(self, event):
+    try:
+      return float(event.value)
+    except ValueError:
+      return None
