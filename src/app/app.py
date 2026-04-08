@@ -3,7 +3,7 @@ from .app_ui import AppUI
 from CTkMessagebox import CTkMessagebox
 from constants.constants import Colors
 from tkinter import messagebox
-from utils import hypothesis
+from utils import *
 
 class App(AppUI):
   def __init__(self, master=None):
@@ -57,8 +57,11 @@ class App(AppUI):
   def calculate_mse(self, event):
     weights = self.__get_weights__()
     dataset = self.__get_dataset__()
+    real_values = self.__get_real_values()
+    predicted_values = hypothesis(weights, dataset)
+    errors = calculate_errors(real_values, predicted_values)
 
-    print(hypothesis(weights, dataset))
+    print(errors)
 
   def __get_weights__(self) -> list[float]:
     return self.weights_sheet.get_data()
