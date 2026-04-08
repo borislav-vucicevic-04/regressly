@@ -60,8 +60,9 @@ class App(AppUI):
     real_values = self.__get_real_values()
     predicted_values = hypothesis(weights, dataset)
     errors = calculate_errors(real_values, predicted_values)
+    mse = mean_squared_error(errors)
 
-    print(errors)
+    print(mse)
 
   def __get_weights__(self) -> list[float]:
     return self.weights_sheet.get_data()
