@@ -52,3 +52,19 @@ class App(AppUI):
       self.dataset_sheet.delete_rows(rows=selected_rows)
     else:
       messagebox.showerror(title="Error while deleting rows", message="You should select at least one row.")
+
+  def calculate_mse(self, event):
+    print(f"Weights: {self.__get_weights__()}")
+    print(f"Dataset: {self.__get_dataset__()}")
+    print(f"Real values: {self.__get_real_values()}")
+
+  def __get_weights__(self) -> list[float]:
+    return self.weights_sheet.get_data()
+
+  def __get_real_values(self) -> list[float]:
+    return self.dataset_sheet.get_column_data(self.dataset_sheet.total_columns() - 1)
+  def __get_dataset__(self) -> list[list[float]]:
+    all_rows = self.dataset_sheet.get_sheet_data()
+    dataset = [row[:int(self.input_size + 1)] for row in all_rows]
+
+    return dataset
