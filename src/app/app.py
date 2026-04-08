@@ -1,5 +1,8 @@
 import customtkinter as ctk
 from .app_ui import AppUI
+from CTkMessagebox import CTkMessagebox
+from constants.constants import Colors
+from tkinter import messagebox
 
 class App(AppUI):
   def __init__(self, master=None):
@@ -35,3 +38,17 @@ class App(AppUI):
       return float(event.value)
     except ValueError:
       return None
+    
+  def add_row(self, event):
+    new_row_idx = self.dataset_sheet.get_total_rows()
+    dataset_filler_values = [1.0] + ([0.0] * (self.dataset_sheet.total_columns() - 1))
+    self.dataset_sheet.insert_row(row=dataset_filler_values, idx=self.dataset_sheet.total_rows())
+    self.dataset_sheet.readonly_cells(row=new_row_idx, column=0, readonly=True)
+  
+  def delete_rows(self, event):
+    selected_rows = self.dataset_sheet.get_selected_rows()
+
+    if selected_rows:
+      self.dataset_sheet.delete_rows(rows=selected_rows)
+    else:
+      messagebox.showerror(title="Error while deleting rows", message="You should select at least one row.")

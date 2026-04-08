@@ -163,7 +163,7 @@ class AppUI:
       font=Fonts.LABEL
     )
     self.btn_delete_row.grid(row=6, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="nswe")
-    self.btn_delete_row.bind("<Button-1>", self.delete_row)
+    self.btn_delete_row.bind("<Button-1>", self.delete_rows)
 
     # Creating button for deleting rows
     self.btn_add_row = ctk.CTkButton(
@@ -199,6 +199,7 @@ class AppUI:
     self.dataset_sheet.enable_bindings((
       "single_select", 
       "row_select", 
+      "drag_select", 
       "column_width_resize", 
       "arrowkeys", 
       "right_click_popup_menu", 
@@ -253,6 +254,6 @@ class AppUI:
   def decrease_input_size(self, event): pass
   def increase_input_size(self, event): pass
   def validate_cell_entry(self, event): pass
-  def delete_row(self, event): pass
+  def delete_rows(self, event): pass
   def add_row(self, event): pass
   def calculate_mse(self, event): pass
