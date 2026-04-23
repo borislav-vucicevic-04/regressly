@@ -33,7 +33,9 @@ class App(AppUI):
     # Otherwise, continue the execution
     dataset_filler_values = [0.0] * self.dataset_sheet.total_rows()
     self.input_size += 1
+    self.weights_sheet.headers([f"w{i}" for i in range(self.input_size + 1)])
     self.weights_sheet.insert_column(column=[0.0], idx=self.input_size)
+    self.dataset_sheet.headers([f"x{i}" for i in range(self.input_size + 1)] + ["y"])
     self.dataset_sheet.insert_column(column=dataset_filler_values, idx=self.input_size)
 
   def validate_cell_entry(self, event):
