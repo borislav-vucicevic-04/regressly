@@ -3,4 +3,4 @@ def mean_squared_error(errors: list[float]) -> float:
 
   for error in errors: mse += error * error
 
-  return mse
+  return mse / len(errors)
