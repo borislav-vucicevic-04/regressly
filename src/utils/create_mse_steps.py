@@ -10,7 +10,7 @@ TEMPLATE = """
         /* PDF Page Setup */
         @page {
             size: A4;
-            margin: 1in;
+            margin: 0.75in;
         }
 
         body {
@@ -22,13 +22,13 @@ TEMPLATE = """
 
         h1 {
             text-align: center;
-            font-size: 24pt;
+            font-size: 18pt;
             margin-bottom: 20pt;
             color: #333333;
         }
 
         h2 {
-            font-size: 18pt;
+            font-size: 16pt;
             margin-top: 20pt;
             border-bottom: 1px solid #333333;
             padding-bottom: 5pt;
@@ -36,14 +36,14 @@ TEMPLATE = """
         }
 
         p {
-            font-size: 12pt;
+            font-size: 14pt;
             margin: 10pt 0;
             color: #333333;
         }
 
         /* Reduced font size for subscripts */
         sub {
-            font-size: 0.7em;
+            font-size: 1em;
         }
 
         /* Increased font size for MSE formula */
@@ -89,15 +89,15 @@ TEMPLATE = """
     <p><strong>δ</strong>: Error (the difference between real and predicted values).</p>
 
     <h2>Hypothesis</h2>
-    <p>$weights</p>
-    <p>h Σ w • x = $function_formula</p>
+    <p>w = $weights</p>
+    <p>h = Σ w • x = $function_formula</p>
 
     <h2>Dataset</h2>
     $dataset_table
 
     <h2>MSE Formula and result</h2>
     <div class="formula-box">
-        <p>MSE = Σ δ<sup>2</sup> = <strong>$mse_result</strong></p>
+        <p>MSE = <sup>1</sup>/<sub>n</sub> Σ δ<sup>2</sup> = <strong>$mse_result</strong></p>
     </div>
 
 </body>
@@ -108,9 +108,10 @@ def create_mse_steps(params: CreateMseStepsParams):
   function_formula = create_weights(params.weights)
   dataset_table = create_dataset_table(params)
   contents = TEMPLATE
+  contents = contents.replace("$weights", f"({", ".join([f"{val:.2f}" for val in params.weights])})")
   contents = contents.replace("$function_formula", function_formula)
   contents = contents.replace("$dataset_table", dataset_table)
-  contents = contents.replace("$mse_result", str(params.mse))
+  contents = contents.replace("$mse_result", f"{params.mse: .2f}")
   create_pdf(contents)
 
 
@@ -119,12 +120,14 @@ def create_weights(weights: list[float]):
 
   if weights[0] == 1: result = "x<sub>0</sub>"
   elif weights[0] == -1: result = f"- x<sub>0</sub>"
-  else: result = f"{weights[0]} • x<sub>0</sub>"
+  elif weights[0] == 0: result = ""
+  else: result = f"{weights[0]: .2f} • x<sub>0</sub>"
 
   for i in range(1, len(weights)):
-    if weights[i] == 1: result = f"+ x<sub>{i}</sub>"
-    elif weights[i] == -1: result = f"- x<sub>{i}</sub>"
-    else: result = f"+ {weights[i]}•x<sub>{i}</sub>"
+    if weights[i] == 1: result += f"+ x<sub>{i}</sub>"
+    elif weights[i] == -1: result += f"- x<sub>{i}</sub>"
+    elif weights[i] == 0: result += ""
+    else: result += f"+ {weights[i]: .2f} • x<sub>{i}</sub>"
 
   return result
 
@@ -148,10 +151,10 @@ def create_dataset_table(params: CreateMseStepsParams):
   for i in range(len(params.dataset)):
     table += "<tr>"
 
-    for j in range(len(params.dataset[i])): table += f"<td>{params.dataset[i][j]}</td>"
-    table += f"<td>{params.real_values[i]}</td>"
-    table += f"<td>{params.predicted_values[i]}</td>"
-    table += f"<td>{params.errors[i]}</td>"
+    for j in range(len(params.dataset[i])): table += f"<td>{params.dataset[i][j]: .2f}</td>"
+    table += f"<td>{params.real_values[i]: .2f}</td>"
+    table += f"<td>{params.predicted_values[i]: .2f}</td>"
+    table += f"<td>{params.errors[i]: .2f}</td>"
 
     table += "</tr>"
 
