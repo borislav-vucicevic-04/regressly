@@ -85,6 +85,13 @@ class App(AppUI):
     else:
       messagebox.showinfo("Calculated mean squared error", f"Mean squared error for this dataset is {mse}")
 
+  def on_select_dataset_sheet(self, event):
+    self.weights_sheet.deselect()
+    self.weights_sheet.redraw()
+  def on_select_weights_sheet(self, event):
+    self.dataset_sheet.deselect()
+    self.dataset_sheet.redraw()
+
   def __get_weights__(self) -> list[float]:
     return self.weights_sheet.get_data()
 

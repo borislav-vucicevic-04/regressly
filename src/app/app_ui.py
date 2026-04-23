@@ -141,6 +141,7 @@ class AppUI:
     self.weights_sheet.set_options(auto_resize_columns=True)
     self.weights_sheet.edit_validation(self.validate_cell_entry)
     self.weights_sheet.pack(fill="both", expand=True, padx=2, pady=(2, 3))
+    self.weights_sheet.extra_bindings([("cell_select", self.on_select_weights_sheet)])
   def __create_dataset_section__(self):
     # Creating section title
     self.lbl_dataset_title = ctk.CTkLabel(
@@ -210,6 +211,7 @@ class AppUI:
     self.dataset_sheet.set_options(auto_resize_columns=True)
     self.dataset_sheet.readonly_cells(column=0)
     self.dataset_sheet.edit_validation(self.validate_cell_entry)
+    self.dataset_sheet.extra_bindings([("cell_select", self.on_select_dataset_sheet)])
     self.dataset_sheet.pack(fill="both", expand=True, padx=2, pady=(2, 3))
   def __create_calculations_section__(self):
     # Creating section title
@@ -257,3 +259,5 @@ class AppUI:
   def delete_rows(self, event): pass
   def add_row(self, event): pass
   def calculate_mse(self, event): pass
+  def on_select_dataset_sheet(self, event): pass
+  def on_select_weights_sheet(self, event): pass
