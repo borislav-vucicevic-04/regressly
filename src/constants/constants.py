@@ -15,6 +15,9 @@ class Colors:
 
 @dataclass(frozen=True)
 class Spacing:
+  WINDOW_HEIGHT: int = 480
+  WINDOW_WIDTH: int = 680
+  BUTTON_WIDTH: int = 150
   PADX: int = 12
   PADY: int = 12
 

@@ -23,19 +23,21 @@ class AppUI:
     self.__create_lbl_title__()
     # INTERFACE FOR SETTING THE PRECISION OF NUMBERS
     self.__create_precision_section__()
+    # SECTION FOR CALCULATIONS
+    self.__create_calculations_section__()
+    # SECTION FOR DATASET CONTROLS
+    self.__create_dataset_controls_section__()
     # INTERFACE FOR SETTING THE FUNCTION INPUT SIZE
     self.__create_input_size_section__()
     # INTERFACE FOR SETTING FUNCTION WEIGHTS
     self.__create_weights_section__()
     # INTERFACE FOR THE DATASET
     self.__create_dataset_section__()
-    # SECTION FOR CALCULATIONS
-    self.__create_calculations_section__()
   def __setup_mainwindow__(self):
     self.mainwindow.title("My first CTK app")
     ## Desired window size
-    window_width = 640
-    window_height = 480
+    window_width = Spacing.WINDOW_WIDTH
+    window_height = Spacing.WINDOW_HEIGHT
 
     ## Get screen size
     screen_width = self.mainwindow.winfo_screenwidth()
@@ -55,7 +57,7 @@ class AppUI:
     )
     self.widget_wrapper.pack(fill="both", expand=True, padx=Spacing.PADX, pady=Spacing.PADY)
     self.widget_wrapper.grid_columnconfigure((0, 1), weight=1)
-    self.widget_wrapper.grid_rowconfigure(9, weight=1)
+    self.widget_wrapper.grid_rowconfigure(4, weight=1)
   def __create_lbl_title__(self):
     self.lbl_title = ctk.CTkLabel(
       master=self.widget_wrapper,
@@ -66,94 +68,225 @@ class AppUI:
     )
     self.lbl_title.grid(row=0, column=0, pady=(0, Spacing.PADY), sticky="nswe", columnspan=2)
   def __create_precision_section__(self):
+    # Creating frame wrapper for the section
+    self.frame_precision_section = ctk.CTkFrame(
+      master=self.widget_wrapper,
+      fg_color=Colors.WHITE
+    )
+    # Ensure the frame sits on the left of the wrapper
+    self.frame_precision_section.grid(row=1, column=0, sticky="w")
+
     ## Creating section title
     self.lbl_precision_title = ctk.CTkLabel(
-      master=self.widget_wrapper,
+      master=self.frame_precision_section,
       text_color=Colors.BLACK,
-      text="Set precision:",
+      text="Change precision:",
       anchor="w",
       font=Fonts.SECTION_TITLE
     )
-    self.lbl_precision_title.grid(row=1, column=0, pady=(0, Spacing.PADY), sticky="nswe")
+    # Align to the left margin
+    self.lbl_precision_title.grid(row=0, column=0, pady=(0, Spacing.PADY), sticky="w")
 
-    ## adding decrease button
+    ## Adding change button
     self.btn_change_precision = ctk.CTkButton(
-      master=self.widget_wrapper,
+      master=self.frame_precision_section,
       text="Change precision",
       text_color=Colors.WHITE,
       fg_color=Colors.BLUE,
       hover_color=Colors.LIGHTBLUE,
       cursor="hand2",
+      width=Spacing.BUTTON_WIDTH,
       font=Fonts.LABEL
     )
-    self.btn_change_precision.grid(row=2, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="nswe")
+    # Align to the left margin
+    self.btn_change_precision.grid(row=1, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="w")
     self.btn_change_precision.bind("<Button-1>", self.change_precision)
 
     ## Creating label for displaying the current precision
     self.lbl_precision = ctk.CTkLabel(
-      master=self.widget_wrapper,
+      master=self.frame_precision_section,
       text_color=Colors.BLACK,
       textvariable=self.lbl_precision_var,
-      anchor="e",
-      font=Fonts.SECTION_TITLE
+      anchor="w", # Align text left
+      font=Fonts.LABEL
     )
-    self.lbl_precision.grid(row=2, column=1, pady=(0, Spacing.PADY), sticky="nswe")
+    # Align to the left margin
+    self.lbl_precision.grid(row=1, column=1, pady=(0, Spacing.PADY), sticky="w")
   def __create_input_size_section__(self):
-    ## Creting section title
-    self.lbl_input_size_title = ctk.CTkLabel(
+    # creating section frame
+    self.frame_input_size_section = ctk.CTkFrame(
       master=self.widget_wrapper,
+      fg_color=Colors.WHITE
+    )
+    # Ensure the frame sits on the left of its grid cell
+    self.frame_input_size_section.grid(row=2, column=0, sticky="w")
+
+    ## Creating section title
+    self.lbl_input_size_title = ctk.CTkLabel(
+      master=self.frame_input_size_section,
       text_color=Colors.BLACK,
-      text="Set input size:",
+      text="Change input size:",
       anchor="w",
       font=Fonts.SECTION_TITLE
     )
-    self.lbl_input_size_title.grid(row=3, column=0, pady=(0, Spacing.PADY), sticky="nswe")
+    # Align to the left margin
+    self.lbl_input_size_title.grid(row=0, column=0, pady=(0, Spacing.PADY), sticky="w")
 
     ## adding decrease button
     self.btn_decrease_input = ctk.CTkButton(
-      master=self.widget_wrapper,
-      text="Decrease input size",
+      master=self.frame_input_size_section,
+      text="Decrease",
       text_color=Colors.WHITE,
       fg_color=Colors.RED,
       hover_color=Colors.LIGHTRED,
       cursor="hand2",
+      width=Spacing.BUTTON_WIDTH,
       font=Fonts.LABEL
     )
-    self.btn_decrease_input.grid(row=4, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="nswe")
+    # Changed sticky to "w"
+    self.btn_decrease_input.grid(row=1, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="w")
     self.btn_decrease_input.bind("<Button-1>", self.decrease_input_size)
 
-    ## adding decrease button
+    ## adding increase button
     self.btn_increase_input = ctk.CTkButton(
-      master=self.widget_wrapper,
-      text="Increase input size",
+      master=self.frame_input_size_section,
+      text="Increase",
       text_color=Colors.WHITE,
       fg_color=Colors.GREEN,
       hover_color=Colors.LIGHTGREEN,
       cursor="hand2",
+      width=Spacing.BUTTON_WIDTH,
       font=Fonts.LABEL
     )
-    self.btn_increase_input.grid(row=4, column=1, padx=(Spacing.PADX, 0), pady=(0, Spacing.PADY), sticky="nswe")
+    # Changed sticky to "w"
+    self.btn_increase_input.grid(row=1, column=1, padx=(Spacing.PADX, 0), pady=(0, Spacing.PADY), sticky="w")
     self.btn_increase_input.bind("<Button-1>", self.increase_input_size)
-  def __create_weights_section__(self):
+  def __create_calculations_section__(self):
+    self.frame_calculations_section = ctk.CTkFrame(
+      master=self.widget_wrapper,
+      fg_color=Colors.WHITE
+    )
+    # Ensure the section frame itself aligns to the left of its grid cell
+    self.frame_calculations_section.grid(row=1, column=1, sticky="w")
+
+    # Creating section title
+    self.lbl_calculations_title = ctk.CTkLabel(
+      master=self.frame_calculations_section,
+      text="Calculations:",
+      text_color=Colors.BLACK,
+      font=Fonts.SECTION_TITLE,
+      anchor="w"
+    )
+    # Fixed: changed pady to (0, Spacing.PADY) to match Precision section
+    self.lbl_calculations_title.grid(row=0, column=0, columnspan=2, sticky="w", pady=(0, Spacing.PADY))
+
+    # Creating button for calculating mse
+    self.btn_calculate_mse = ctk.CTkButton(
+      master=self.frame_calculations_section,
+      text="Calculate MSE",
+      text_color=Colors.WHITE,
+      fg_color=Colors.BLUE,
+      hover_color=Colors.LIGHTBLUE,
+      cursor="hand2",
+      width=Spacing.BUTTON_WIDTH,
+      font=Fonts.LABEL
+    )
+    # Fixed: changed pady to (0, Spacing.PADY) so it doesn't push away from the title
+    self.btn_calculate_mse.grid(row=1, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="w")
+    self.btn_calculate_mse.bind("<Button-1>", self.calculate_mse)
+
+    # Creating button for applying gradient descent
+    self.btn_apply_gradient_descent = ctk.CTkButton(
+      master=self.frame_calculations_section,
+      text="Apply GD",
+      text_color=Colors.WHITE,
+      fg_color=Colors.BLUE,
+      hover_color=Colors.LIGHTBLUE,
+      cursor="hand2",
+      width=Spacing.BUTTON_WIDTH,
+      font=Fonts.LABEL
+    )
+    # Fixed: changed pady to (0, Spacing.PADY)
+    self.btn_apply_gradient_descent.grid(row=1, column=1, padx=(Spacing.PADX, 0), pady=(0, Spacing.PADY), sticky="w")
+    self.btn_apply_gradient_descent.bind("<Button-1>", self.calculate_mse)
+  def __create_dataset_controls_section__(self):
+    self.frame_dataset_controls_section = ctk.CTkFrame(
+      master=self.widget_wrapper,
+      fg_color=Colors.WHITE
+    )
+    # Ensure the section frame itself aligns to the left of its grid cell
+    self.frame_dataset_controls_section.grid(row=2, column=1, sticky="w")
+
+    # Creating section title
+    self.lbl_dataset_controls_title = ctk.CTkLabel(
+      master=self.frame_dataset_controls_section,
+      text="Dataset controls:",
+      text_color=Colors.BLACK,
+      font=Fonts.SECTION_TITLE,
+      anchor="w"
+    )
+    # Fixed: changed pady to (0, Spacing.PADY) to match Precision section
+    self.lbl_dataset_controls_title.grid(row=0, column=0, columnspan=2, sticky="w", pady=(0, Spacing.PADY))
+
+    ## Creating button for deleting rows
+    self.btn_delete_row = ctk.CTkButton(
+      master=self.frame_dataset_controls_section,
+      text="Delete row",
+      text_color=Colors.WHITE,
+      fg_color=Colors.RED,
+      hover_color=Colors.LIGHTRED,
+      cursor="hand2",
+      width=Spacing.BUTTON_WIDTH,
+      font=Fonts.LABEL
+    )
+    self.btn_delete_row.grid(row=1, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="w")
+    self.btn_delete_row.bind("<Button-1>", self.delete_rows)
+
+    ## Creating button for adding rows
+    self.btn_add_row = ctk.CTkButton(
+      master=self.frame_dataset_controls_section,
+      text="Add row",
+      text_color=Colors.WHITE,
+      fg_color=Colors.GREEN,
+      hover_color=Colors.LIGHTGREEN,
+      cursor="hand2",
+      width=Spacing.BUTTON_WIDTH,
+      font=Fonts.LABEL
+    )
+    self.btn_add_row.grid(row=1, column=1, padx=(Spacing.PADX, 0), pady=(0, Spacing.PADY), sticky="w")
+    self.btn_add_row.bind("<Button-1>", self.add_row)
+  def __create_weights_section__(self):  
+    self.frame_weights_section = ctk.CTkFrame(
+      master=self.widget_wrapper,
+      fg_color=Colors.WHITE
+    )
+    # sticky="ew" makes the section frame fill the width of the widget_wrapper
+    self.frame_weights_section.grid(row=3, column=0, columnspan=3, sticky="ew")
+    
+    # This tells the frame to expand column 0 to fill all available space
+    self.frame_weights_section.grid_columnconfigure(0, weight=1)
+
     # Creating section title
     self.lbl_weights_title = ctk.CTkLabel(
-      master=self.widget_wrapper,
+      master=self.frame_weights_section,
       text="Function weights:",
       text_color=Colors.BLACK,
       font=Fonts.SECTION_TITLE,
       anchor="w"
     )
-    self.lbl_weights_title.grid(row=5, column=0, columnspan=2, pady=(0, Spacing.PADY), sticky="nswe")
+    # sticky="w" to keep the title left-aligned
+    self.lbl_weights_title.grid(row=0, column=0, pady=(0, Spacing.PADY), sticky="w")
 
     # Creating weights sheet wrapper
     self.weights_sheet_wrapper = ctk.CTkFrame(
-      master=self.widget_wrapper,
+      master=self.frame_weights_section,
       border_color=Colors.BLACK,
       corner_radius=0,
       fg_color=Colors.WHITE,
       border_width=1
     )
-    self.weights_sheet_wrapper.grid(row=6, column=0, columnspan=2, sticky="nswe", padx=2, pady=(0, Spacing.PADY))
+    # sticky="nsew" here fills the allocated column space
+    self.weights_sheet_wrapper.grid(row=1, column=0, sticky="nsew", padx=2, pady=(0, Spacing.PADY))
     
     # Creating weights sheet
     self.weights_sheet = Sheet(
@@ -180,53 +313,41 @@ class AppUI:
     self.weights_sheet.pack(fill="both", expand=True, padx=2, pady=(2, 3))
     self.weights_sheet.extra_bindings([("cell_select", self.on_select_weights_sheet)])
   def __create_dataset_section__(self):
-    # Creating section title
-    self.lbl_dataset_title = ctk.CTkLabel(
+    self.frame_dataset_section = ctk.CTkFrame(
       master=self.widget_wrapper,
+      fg_color=Colors.WHITE
+    )
+    # sticky="nsew" allows the section itself to grow vertically within widget_wrapper
+    self.frame_dataset_section.grid(row=4, column=0, columnspan=3, sticky="nsew")
+    
+    # Configure column 1 to take up horizontal space
+    self.frame_dataset_section.grid_columnconfigure(1, weight=1)
+    
+    # NEW: Configure row 2 (the sheet row) to take up all remaining vertical space
+    self.frame_dataset_section.grid_rowconfigure(1, weight=1)
+
+    ## Creating section title
+    self.lbl_dataset_title = ctk.CTkLabel(
+      master=self.frame_dataset_section,
       text="Dataset:",
       text_color=Colors.BLACK,
       font=Fonts.SECTION_TITLE,
       anchor="w"
     )
-    self.lbl_dataset_title.grid(row=7, column=0, columnspan=2, pady=(0, Spacing.PADY), sticky="nswe")
-
-    # Creating button for deleting rows
-    self.btn_delete_row = ctk.CTkButton(
-      master=self.widget_wrapper,
-      text="Delete row",
-      text_color=Colors.WHITE,
-      fg_color=Colors.RED,
-      hover_color=Colors.LIGHTRED,
-      cursor="hand2",
-      font=Fonts.LABEL
-    )
-    self.btn_delete_row.grid(row=8, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="nswe")
-    self.btn_delete_row.bind("<Button-1>", self.delete_rows)
-
-    # Creating button for deleting rows
-    self.btn_add_row = ctk.CTkButton(
-      master=self.widget_wrapper,
-      text="Add row",
-      text_color=Colors.WHITE,
-      fg_color=Colors.GREEN,
-      hover_color=Colors.LIGHTGREEN,
-      cursor="hand2",
-      font=Fonts.LABEL
-    )
-    self.btn_add_row.grid(row=8, column=1, padx=(Spacing.PADX, 0), pady=(0, Spacing.PADY), sticky="nswe")
-    self.btn_add_row.bind("<Button-1>", self.add_row)
+    self.lbl_dataset_title.grid(row=0, column=0, columnspan=2, pady=(0, Spacing.PADY), sticky="w")
 
     # Creating dataset sheet wrapper
     self.dataset_sheet_wrapper = ctk.CTkFrame(
-      master=self.widget_wrapper,
+      master=self.frame_dataset_section,
       border_color=Colors.BLACK,
       corner_radius=0,
       fg_color=Colors.WHITE,
       border_width=1
     )
-    self.dataset_sheet_wrapper.grid(row=9, column=0, columnspan=2, sticky="nswe")
+    # sticky="nsew" is critical here to fill the weighted row and column
+    self.dataset_sheet_wrapper.grid(row=1, column=0, columnspan=2, sticky="nsew")
     
-    # Creating weights sheet
+    # Creating dataset sheet
     self.dataset_sheet = Sheet(
       self.dataset_sheet_wrapper,
       row_height=20,
@@ -249,43 +370,8 @@ class AppUI:
     self.dataset_sheet.readonly_cells(column=0)
     self.dataset_sheet.edit_validation(self.validate_cell_entry)
     self.dataset_sheet.extra_bindings([("cell_select", self.on_select_dataset_sheet)])
+    # pack(expand=True) ensures the sheet fills the wrapper frame
     self.dataset_sheet.pack(fill="both", expand=True, padx=2, pady=(2, 3))
-  def __create_calculations_section__(self):
-    # Creating section title
-    self.lbl_calculations_title = ctk.CTkLabel(
-      master=self.widget_wrapper,
-      text="Calculations:",
-      text_color=Colors.BLACK,
-      font=Fonts.SECTION_TITLE,
-      anchor="w"
-    )
-    self.lbl_calculations_title.grid(row=10, column=0, columnspan=2, sticky="nswe", pady=Spacing.PADY)
-
-    # Creating button for calculating mse
-    self.btn_calculate_mse = ctk.CTkButton(
-      master=self.widget_wrapper,
-      text="Calculate MSE",
-      text_color=Colors.WHITE,
-      fg_color=Colors.BLUE,
-      hover_color=Colors.LIGHTBLUE,
-      cursor="hand2",
-      font=Fonts.LABEL
-    )
-    self.btn_calculate_mse.grid(row=11, column=0, padx=(0, Spacing.PADX), pady=(Spacing.PADY, 0), sticky="nswe")
-    self.btn_calculate_mse.bind("<Button-1>", self.calculate_mse)
-
-    # Creating button for applying gradient descent
-    self.btn_apply_gradient_descent = ctk.CTkButton(
-      master=self.widget_wrapper,
-      text="Apply gradient descent",
-      text_color=Colors.WHITE,
-      fg_color=Colors.BLUE,
-      hover_color=Colors.LIGHTBLUE,
-      cursor="hand2",
-      font=Fonts.LABEL
-    )
-    self.btn_apply_gradient_descent.grid(row=11, column=1, padx=(Spacing.PADX, 0), pady=(Spacing.PADY, 0), sticky="nswe")
-    self.btn_apply_gradient_descent.bind("<Button-1>", self.calculate_mse)
   
   # Method to run the application
   def run(self): pass
