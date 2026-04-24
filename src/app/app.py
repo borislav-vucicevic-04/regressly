@@ -24,13 +24,17 @@ class App(AppUI):
     if not proceed: return
 
     #OTHERWISE: Change the precision
-    newPrecision = simpledialog.askinteger("Change precision", "Enter new value for precision.\nNOTE: value must be between 0 and 5 (both included)")
+    newPrecision = 0;
 
-    while newPrecision < 0 or newPrecision > 5:
-      messagebox.showerror("Change precision", "You must enter number between 0 and 5 (both included).")
-      newPrecision = simpledialog.askinteger("Change precision", "Enter new value for precision.\nNOTE: value must be between 0 and 5 (both included)")
+    while True:
+      result = self.__get_precision__()
+      
+      if result is None: break # Stop if user hits Cancel
+      elif result == -1: messagebox.showerror("Error", "You must enter a number between 0 and 5.")
+      else:
+        self.precision = result
+        break # Success
     
-    self.precision = newPrecision
     self.lbl_precision_var.set(f"Current precision: {self.precision}")
     self.__apply_precision__()
 
@@ -150,3 +154,36 @@ class App(AppUI):
 
     self.weights_sheet.refresh()
     self.dataset_sheet.refresh()
+  
+  def __get_precision__(self):
+    # 1. Create the dialog
+    dialog = ctk.CTkInputDialog(text="Enter a number (0-5):", title="Change Precision")
+    
+    # 2. Force dimensions update for centering
+    dialog.update_idletasks()
+    
+    # 3. Calculate center position relative to self.mainwindow
+    main_x = self.mainwindow.winfo_rootx()
+    main_y = self.mainwindow.winfo_rooty()
+    main_w = self.mainwindow.winfo_width()
+    main_h = self.mainwindow.winfo_height()
+    
+    dlg_w = dialog.winfo_width()
+    dlg_h = dialog.winfo_height()
+    
+    x = main_x + (main_w // 2) - (dlg_w // 2)
+    y = main_y + (main_h // 2) - (dlg_h // 2)
+    
+    # 4. Position dialog and capture input
+    dialog.geometry(f"+{x}+{y}")
+    raw_input = dialog.get_input()
+    
+    # 5. Logic: None = Cancel, -1 = Error, int = Success
+    if raw_input is None: return None
+      
+    try:
+      value = int(raw_input)
+      if 0 <= value <= 5: return value
+      else: return -1 # Out of range
+    except Exception as e:
+      return -1 # Not a number
