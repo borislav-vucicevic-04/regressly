@@ -11,14 +11,18 @@ class AppUI:
     # CREATING APP PROPERTIES
     ## current input size of the function
     self.input_size = 3
+    ## current precision
+    self.precision = 2
     ## label value controller
-    self.lbl_input_size_var = ctk.StringVar(value=f"Current size: {self.input_size}")
+    self.lbl_precision_var = ctk.StringVar(value=f"Current precision: {self.precision}")
     # SETUP MAINWINDOW
     self.__setup_mainwindow__()
     # CREATING FRAME FOR COMPONENTS
     self.__create_component_wrapper__()
     # TITLE LABEL
     self.__create_lbl_title__()
+    # INTERFACE FOR SETTING THE PRECISION OF NUMBERS
+    self.__create_precision_section__()
     # INTERFACE FOR SETTING THE FUNCTION INPUT SIZE
     self.__create_input_size_section__()
     # INTERFACE FOR SETTING FUNCTION WEIGHTS
@@ -51,7 +55,7 @@ class AppUI:
     )
     self.widget_wrapper.pack(fill="both", expand=True, padx=Spacing.PADX, pady=Spacing.PADY)
     self.widget_wrapper.grid_columnconfigure((0, 1), weight=1)
-    self.widget_wrapper.grid_rowconfigure(7, weight=1)
+    self.widget_wrapper.grid_rowconfigure(9, weight=1)
   def __create_lbl_title__(self):
     self.lbl_title = ctk.CTkLabel(
       master=self.widget_wrapper,
@@ -61,6 +65,39 @@ class AppUI:
       font=Fonts.APP_TITLE
     )
     self.lbl_title.grid(row=0, column=0, pady=(0, Spacing.PADY), sticky="nswe", columnspan=2)
+  def __create_precision_section__(self):
+    ## Creating section title
+    self.lbl_precision_title = ctk.CTkLabel(
+      master=self.widget_wrapper,
+      text_color=Colors.BLACK,
+      text="Set precision:",
+      anchor="w",
+      font=Fonts.SECTION_TITLE
+    )
+    self.lbl_precision_title.grid(row=1, column=0, pady=(0, Spacing.PADY), sticky="nswe")
+
+    ## adding decrease button
+    self.btn_change_precision = ctk.CTkButton(
+      master=self.widget_wrapper,
+      text="Change precision",
+      text_color=Colors.WHITE,
+      fg_color=Colors.BLUE,
+      hover_color=Colors.LIGHTBLUE,
+      cursor="hand2",
+      font=Fonts.LABEL
+    )
+    self.btn_change_precision.grid(row=2, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="nswe")
+    self.btn_change_precision.bind("<Button-1>", self.change_precision)
+
+    ## Creating label for displaying the current precision
+    self.lbl_precision = ctk.CTkLabel(
+      master=self.widget_wrapper,
+      text_color=Colors.BLACK,
+      textvariable=self.lbl_precision_var,
+      anchor="e",
+      font=Fonts.SECTION_TITLE
+    )
+    self.lbl_precision.grid(row=2, column=1, pady=(0, Spacing.PADY), sticky="nswe")
   def __create_input_size_section__(self):
     ## Creting section title
     self.lbl_input_size_title = ctk.CTkLabel(
@@ -70,7 +107,7 @@ class AppUI:
       anchor="w",
       font=Fonts.SECTION_TITLE
     )
-    self.lbl_input_size_title.grid(row=1, column=0, pady=(0, Spacing.PADY), sticky="nswe")
+    self.lbl_input_size_title.grid(row=3, column=0, pady=(0, Spacing.PADY), sticky="nswe")
 
     ## adding decrease button
     self.btn_decrease_input = ctk.CTkButton(
@@ -82,7 +119,7 @@ class AppUI:
       cursor="hand2",
       font=Fonts.LABEL
     )
-    self.btn_decrease_input.grid(row=2, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="nswe")
+    self.btn_decrease_input.grid(row=4, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="nswe")
     self.btn_decrease_input.bind("<Button-1>", self.decrease_input_size)
 
     ## adding decrease button
@@ -95,7 +132,7 @@ class AppUI:
       cursor="hand2",
       font=Fonts.LABEL
     )
-    self.btn_increase_input.grid(row=2, column=1, padx=(Spacing.PADX, 0), pady=(0, Spacing.PADY), sticky="nswe")
+    self.btn_increase_input.grid(row=4, column=1, padx=(Spacing.PADX, 0), pady=(0, Spacing.PADY), sticky="nswe")
     self.btn_increase_input.bind("<Button-1>", self.increase_input_size)
   def __create_weights_section__(self):
     # Creating section title
@@ -106,7 +143,7 @@ class AppUI:
       font=Fonts.SECTION_TITLE,
       anchor="w"
     )
-    self.lbl_weights_title.grid(row=3, column=0, columnspan=2, pady=(0, Spacing.PADY), sticky="nswe")
+    self.lbl_weights_title.grid(row=5, column=0, columnspan=2, pady=(0, Spacing.PADY), sticky="nswe")
 
     # Creating weights sheet wrapper
     self.weights_sheet_wrapper = ctk.CTkFrame(
@@ -116,7 +153,7 @@ class AppUI:
       fg_color=Colors.WHITE,
       border_width=1
     )
-    self.weights_sheet_wrapper.grid(row=4, column=0, columnspan=2, sticky="nswe", padx=2, pady=(0, Spacing.PADY))
+    self.weights_sheet_wrapper.grid(row=6, column=0, columnspan=2, sticky="nswe", padx=2, pady=(0, Spacing.PADY))
     
     # Creating weights sheet
     self.weights_sheet = Sheet(
@@ -124,7 +161,7 @@ class AppUI:
       row_height=20,
       height=46,
       header=["w0", "w1", "w2", "w3"],
-      data=[[1.0, 0.0, 0.0, 0.0]],
+      data=[[f"{1: .2f}", f"{0: .2f}", f"{0: .2f}", f"{0: .2f}"]],
       frame_bg=Colors.BLACK
     )
     self.weights_sheet.enable_bindings((
@@ -151,7 +188,7 @@ class AppUI:
       font=Fonts.SECTION_TITLE,
       anchor="w"
     )
-    self.lbl_dataset_title.grid(row=5, column=0, columnspan=2, pady=(0, Spacing.PADY), sticky="nswe")
+    self.lbl_dataset_title.grid(row=7, column=0, columnspan=2, pady=(0, Spacing.PADY), sticky="nswe")
 
     # Creating button for deleting rows
     self.btn_delete_row = ctk.CTkButton(
@@ -163,7 +200,7 @@ class AppUI:
       cursor="hand2",
       font=Fonts.LABEL
     )
-    self.btn_delete_row.grid(row=6, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="nswe")
+    self.btn_delete_row.grid(row=8, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="nswe")
     self.btn_delete_row.bind("<Button-1>", self.delete_rows)
 
     # Creating button for deleting rows
@@ -176,7 +213,7 @@ class AppUI:
       cursor="hand2",
       font=Fonts.LABEL
     )
-    self.btn_add_row.grid(row=6, column=1, padx=(Spacing.PADX, 0), pady=(0, Spacing.PADY), sticky="nswe")
+    self.btn_add_row.grid(row=8, column=1, padx=(Spacing.PADX, 0), pady=(0, Spacing.PADY), sticky="nswe")
     self.btn_add_row.bind("<Button-1>", self.add_row)
 
     # Creating dataset sheet wrapper
@@ -187,14 +224,14 @@ class AppUI:
       fg_color=Colors.WHITE,
       border_width=1
     )
-    self.dataset_sheet_wrapper.grid(row=7, column=0, columnspan=2, sticky="nswe")
+    self.dataset_sheet_wrapper.grid(row=9, column=0, columnspan=2, sticky="nswe")
     
     # Creating weights sheet
     self.dataset_sheet = Sheet(
       self.dataset_sheet_wrapper,
       row_height=20,
       header=["x0", "x1", "x2", "x3", "y"],
-      data=[[1.0, 0.0, 0.0, 0.0, 0.0]],
+      data=[[f"{1: .2f}", f"{0: .2f}", f"{0: .2f}", f"{0: .2f}", f"{0: .2f}"]],
       frame_bg=Colors.BLACK
     )
     self.dataset_sheet.enable_bindings((
@@ -222,7 +259,7 @@ class AppUI:
       font=Fonts.SECTION_TITLE,
       anchor="w"
     )
-    self.lbl_calculations_title.grid(row=8, column=0, columnspan=2, sticky="nswe", pady=Spacing.PADY)
+    self.lbl_calculations_title.grid(row=10, column=0, columnspan=2, sticky="nswe", pady=Spacing.PADY)
 
     # Creating button for calculating mse
     self.btn_calculate_mse = ctk.CTkButton(
@@ -234,7 +271,7 @@ class AppUI:
       cursor="hand2",
       font=Fonts.LABEL
     )
-    self.btn_calculate_mse.grid(row=8, column=0, padx=(0, Spacing.PADX), pady=(Spacing.PADY, 0), sticky="nswe")
+    self.btn_calculate_mse.grid(row=11, column=0, padx=(0, Spacing.PADX), pady=(Spacing.PADY, 0), sticky="nswe")
     self.btn_calculate_mse.bind("<Button-1>", self.calculate_mse)
 
     # Creating button for applying gradient descent
@@ -247,12 +284,12 @@ class AppUI:
       cursor="hand2",
       font=Fonts.LABEL
     )
-    self.btn_apply_gradient_descent.grid(row=8, column=1, padx=(Spacing.PADX, 0), pady=(Spacing.PADY, 0), sticky="nswe")
+    self.btn_apply_gradient_descent.grid(row=11, column=1, padx=(Spacing.PADX, 0), pady=(Spacing.PADY, 0), sticky="nswe")
     self.btn_apply_gradient_descent.bind("<Button-1>", self.calculate_mse)
-
   
   # Method to run the application
   def run(self): pass
+  def change_precision(self, event): pass
   def decrease_input_size(self, event): pass
   def increase_input_size(self, event): pass
   def validate_cell_entry(self, event): pass

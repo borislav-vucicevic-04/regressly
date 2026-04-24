@@ -2,6 +2,7 @@ from dataclasses import dataclass
 
 @dataclass(kw_only=True)
 class CreateMseStepsParams:
+    precision: float
     weights: list[float]
     dataset: list[list[float]]
     real_values: list[float]

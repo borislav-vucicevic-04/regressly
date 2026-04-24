@@ -1,9 +1,8 @@
 import customtkinter as ctk
 
 from .app_ui import AppUI
-from CTkMessagebox import CTkMessagebox
 from constants.constants import Colors
-from tkinter import messagebox
+from tkinter import messagebox, simpledialog
 from utils import *
 from models import CreateMseStepsParams
 
@@ -14,6 +13,27 @@ class App(AppUI):
   def run(self):
     self.mainwindow.mainloop()
   
+  def change_precision(self, event):
+    proceed = messagebox.askokcancel(
+      title="Change the precision",
+      message="Please keep in mind that this will round all weights and numbers in the dataset, and that this action is irreversible. To reverse it, you will need to change the precision again and manually retype the data!",
+      icon="warning"
+    )
+
+    # GUARDING CLAUSE: if user changed the mind and pressed cancel, exit the method immediately
+    if not proceed: return
+
+    #OTHERWISE: Change the precision
+    newPrecision = simpledialog.askinteger("Change precision", "Enter new value for precision.\nNOTE: value must be between 0 and 5 (both included)")
+
+    while newPrecision < 0 or newPrecision > 5:
+      messagebox.showerror("Change precision", "You must enter number between 0 and 5 (both included).")
+      newPrecision = simpledialog.askinteger("Change precision", "Enter new value for precision.\nNOTE: value must be between 0 and 5 (both included)")
+    
+    self.precision = newPrecision
+    self.lbl_precision_var.set(f"Current precision: {self.precision}")
+    self.__apply_precision__()
+
   def decrease_input_size(self, event):
     # GUARDING CLAUSE:
     # If the input size is equal to one, exit the method
@@ -31,22 +51,23 @@ class App(AppUI):
     if self.input_size == 10: return
 
     # Otherwise, continue the execution
-    dataset_filler_values = [0.0] * self.dataset_sheet.total_rows()
+    dataset_filler_values = [f"{0: .{self.precision}f}"] * self.dataset_sheet.total_rows()
     self.input_size += 1
     self.weights_sheet.headers([f"w{i}" for i in range(self.input_size + 1)])
-    self.weights_sheet.insert_column(column=[0.0], idx=self.input_size)
+    self.weights_sheet.insert_column(column=[f"{0: .{self.precision}f}"], idx=self.input_size)
     self.dataset_sheet.headers([f"x{i}" for i in range(self.input_size + 1)] + ["y"])
     self.dataset_sheet.insert_column(column=dataset_filler_values, idx=self.input_size)
 
   def validate_cell_entry(self, event):
     try:
-      return float(event.value)
+      value = float(event.value) 
+      return f"{value: .{self.precision}f}"
     except ValueError:
       return None
     
   def add_row(self, event):
     new_row_idx = self.dataset_sheet.get_total_rows()
-    dataset_filler_values = [1.0] + ([0.0] * (self.dataset_sheet.total_columns() - 1))
+    dataset_filler_values = [f"{1: .{self.precision}f}"] + ([f"{0: .{self.precision}f}"] * (self.dataset_sheet.total_columns() - 1))
     self.dataset_sheet.insert_row(row=dataset_filler_values, idx=self.dataset_sheet.total_rows())
     self.dataset_sheet.readonly_cells(row=new_row_idx, column=0, readonly=True)
   
@@ -75,6 +96,7 @@ class App(AppUI):
 
     if generate_pdf:
       create_mse_steps(CreateMseStepsParams(
+        precision=self.precision,
         weights=weights,
         dataset=dataset,
         real_values=real_values,
@@ -88,18 +110,43 @@ class App(AppUI):
   def on_select_dataset_sheet(self, event):
     self.weights_sheet.deselect()
     self.weights_sheet.redraw()
+  
   def on_select_weights_sheet(self, event):
     self.dataset_sheet.deselect()
     self.dataset_sheet.redraw()
 
   def __get_weights__(self) -> list[float]:
-    return self.weights_sheet.get_data()
+    return [float(elem) for elem in self.weights_sheet.get_data()]
 
   def __get_real_values(self) -> list[float]:
-    return self.dataset_sheet.get_column_data(self.dataset_sheet.total_columns() - 1)
+    return [float(elem) for elem in self.dataset_sheet.get_column_data(self.dataset_sheet.total_columns() - 1)]
   
   def __get_dataset__(self) -> list[list[float]]:
     all_rows = self.dataset_sheet.get_sheet_data()
-    dataset = [row[:int(self.input_size + 1)] for row in all_rows]
+
+    # Slice the row first, then convert each element in that slice to a float
+    dataset = [
+      [float(cell) for cell in row[:int(self.input_size + 1)]] 
+      for row in all_rows
+    ]
 
     return dataset
+  
+  def __apply_precision__(self):
+    # Applying precision to weights
+    weights = self.__get_weights__()
+    dataset = self.__get_dataset__()
+    real_values = self.__get_real_values()
+    updated_weights_sheet = [[f"{elem:.{self.precision}f}" for elem in weights]]
+    updated_dataset_sheet = []
+
+    for i in range(len(dataset)):
+      rounded_dataset = [f"{elem:.{self.precision}f}" for elem in dataset[i]]
+      rounded_real_value = f"{real_values[i]:.{self.precision}f}"
+      updated_dataset_sheet.append(rounded_dataset + [rounded_real_value])
+
+    self.weights_sheet.set_sheet_data(updated_weights_sheet)
+    self.dataset_sheet.set_sheet_data(updated_dataset_sheet)
+
+    self.weights_sheet.refresh()
+    self.dataset_sheet.refresh()
