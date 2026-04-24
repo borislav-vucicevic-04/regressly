@@ -18,7 +18,7 @@ class AppUI:
     # SETUP MAINWINDOW
     self.__setup_mainwindow__()
     # CREATING FRAME FOR COMPONENTS
-    self.__create_component_wrapper__()
+    self.__create_widget_wrapper__()
     # TITLE LABEL
     self.__create_lbl_title__()
     # INTERFACE FOR SETTING THE PRECISION OF NUMBERS
@@ -48,7 +48,7 @@ class AppUI:
     ## Set geometry
     self.mainwindow.geometry(f"{window_width}x{window_height}+{x}+{y}")
     self.mainwindow.minsize(width=window_width, height=window_height)
-  def __create_component_wrapper__(self):
+  def __create_widget_wrapper__(self):
     self.widget_wrapper: ctk.CTkFrame = ctk.CTkFrame(
       master=self.mainwindow,
       fg_color=Colors.WHITE
