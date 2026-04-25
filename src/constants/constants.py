@@ -4,6 +4,7 @@ from dataclasses import dataclass
 class Colors:
   WHITE: str = "#fefefe"
   GRAY: str = "#aeaeae"
+  LIGHTGRAY: str = "#bfbfbf"
   BLACK: str = "#131313"
   RED: str = "#ed2c2c"
   LIGHTRED: str = "#EF4444"
