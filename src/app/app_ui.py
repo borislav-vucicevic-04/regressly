@@ -317,13 +317,13 @@ class AppUI:
       master=self.widget_wrapper,
       fg_color=Colors.WHITE
     )
-    # sticky="nsew" allows the section itself to grow vertically within widget_wrapper
+    # sticky="nsew" allows the section itself to grow portraitly within widget_wrapper
     self.frame_dataset_section.grid(row=4, column=0, columnspan=3, sticky="nsew")
     
-    # Configure column 1 to take up horizontal space
+    # Configure column 1 to take up landscape space
     self.frame_dataset_section.grid_columnconfigure(1, weight=1)
     
-    # NEW: Configure row 2 (the sheet row) to take up all remaining vertical space
+    # NEW: Configure row 2 (the sheet row) to take up all remaining portrait space
     self.frame_dataset_section.grid_rowconfigure(1, weight=1)
 
     ## Creating section title

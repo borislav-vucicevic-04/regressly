@@ -100,15 +100,21 @@ class App(AppUI):
     mse = mean_squared_error(errors)
 
     if generate_pdf:
-      create_mse_steps(CreateMseStepsParams(
-        precision=self.precision,
-        weights=weights,
-        dataset=dataset,
-        real_values=real_values,
-        predicted_values=predicted_values,
-        errors=errors,
-        mse=mse
-      ))
+      dialog = PrintDialog(self.mainwindow)
+      dialog.showDialog()
+      print_settings = dialog.getPrintSettings()
+
+      if print_settings is not None:
+        create_mse_steps(CreateMseStepsParams(
+          precision=self.precision,
+          weights=weights,
+          dataset=dataset,
+          real_values=real_values,
+          predicted_values=predicted_values,
+          errors=errors,
+          mse=mse,
+          print_settings=print_settings
+        ))
     else:
       messagebox.showinfo("Calculated mean squared error", f"Mean squared error for this dataset is {mse}")
 

@@ -38,8 +38,11 @@ class HtmlTemplates:
       <style>
         /* PDF Page Setup */
         @page {
-          size: A4;
-          margin: 0.75in;
+          size: $page_size $page_orientation;
+          margin-left: $margin_left;
+          margin-top: $margin_top;
+          margin-right: $margin_right;
+          margin-bottom: $margin_bottom;
         }
         body {
           font-family: "Times New Roman", Times, serif;

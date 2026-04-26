@@ -31,8 +31,8 @@ class PrintDialogUI(ctk.CTkToplevel):
       widget.grid(row=row, column=1, sticky="ew", padx=Spacing.PADX, pady=Spacing.PADY)
 
     # 2. Page Orientation (Read-only)
-    self.orient_cb = ctk.CTkComboBox(self.widget_wrapper, values=["vertical", "horizontal"], state="readonly")
-    self.orient_cb.set("vertical")
+    self.orient_cb = ctk.CTkComboBox(self.widget_wrapper, values=["portrait", "landscape"], state="readonly")
+    self.orient_cb.set("portrait")
     add_row("Page Orientation:", self.orient_cb, 0)
 
     # 3. Page Size (Read-only)
@@ -59,8 +59,8 @@ class PrintDialogUI(ctk.CTkToplevel):
     add_row("Margin Bottom:", self.m_bottom, 5)
 
     # 5. Units (Read-only)
-    self.units_cb = ctk.CTkComboBox(self.widget_wrapper, values=["inch", "cm"], state="readonly")
-    self.units_cb.set("inch")
+    self.units_cb = ctk.CTkComboBox(self.widget_wrapper, values=["in", "cm"], state="readonly")
+    self.units_cb.set("in")
     add_row("Units:", self.units_cb, 6)
 
     # 6. Buttons Frame

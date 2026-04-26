@@ -10,6 +10,12 @@ def create_mse_steps(params: CreateMseStepsParams):
   contents = contents.replace("$function_formula", function_formula)
   contents = contents.replace("$dataset_table", dataset_table)
   contents = contents.replace("$mse_result", f"{params.mse: .{params.precision}f}")
+  contents = contents.replace("$page_orientation", params.print_settings.page_orientation)
+  contents = contents.replace("$page_size", params.print_settings.page_size)
+  contents = contents.replace("$margin_left", f"{params.print_settings.margin_left}{params.print_settings.units}")
+  contents = contents.replace("$margin_top", f"{params.print_settings.margin_top}{params.print_settings.units}")
+  contents = contents.replace("$margin_right", f"{params.print_settings.margin_right}{params.print_settings.units}")
+  contents = contents.replace("$margin_bottom", f"{params.print_settings.margin_bottom}{params.print_settings.units}")
   create_pdf(contents)
 
 
