@@ -1,4 +1,6 @@
-def gradient_descent(*, learning_rate: float, weights: list[float], dataset:list[list[float]], errors: list[float]):
+from models import GradientDescentResult
+
+def gradient_descent(*, learning_rate: float, weights: list[float], dataset:list[list[float]], errors: list[float]) -> GradientDescentResult:
   gradient_components = []
   updated_weights = []
 
@@ -14,4 +16,4 @@ def gradient_descent(*, learning_rate: float, weights: list[float], dataset:list
 
     updated_weights.append(weights[i] + learning_rate * sum(transposed[i]))
 
-  return updated_weights
+  return GradientDescentResult(updated_weights=updated_weights, gradient_components=gradient_components)

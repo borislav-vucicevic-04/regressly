@@ -143,14 +143,14 @@ class App(AppUI):
     real_values = self.__get_real_values()
     predicted_values = hypothesis(weights, dataset)
     errors = calculate_errors(real_values, predicted_values)
-    updated_weights = gradient_descent(
+    gradient_descent_result = gradient_descent(
       learning_rate=learning_rate, 
       weights=weights, 
       errors=errors, 
       dataset=dataset
     )
 
-    messagebox.showinfo("Applying gradient descent", f"Updated weights: {", ".join([f"{weight: .{self.precision}f}" for weight in updated_weights])}")
+    messagebox.showinfo("Applying gradient descent", f"Updated weights: {", ".join([f"{weight: .{self.precision}f}" for weight in gradient_descent_result.updated_weights])}")
 
   def on_select_dataset_sheet(self, event):
     self.weights_sheet.deselect()

@@ -21,3 +21,8 @@ class CreateMseStepsParams:
   errors: list[float]
   mse: float
   print_settings: PrintSettings = field(default_factory=PrintSettings)
+
+@dataclass(kw_only=True)
+class GradientDescentResult:
+  updated_weights: list[float]
+  gradient_components: list[list[float]]
