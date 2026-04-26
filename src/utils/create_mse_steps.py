@@ -41,11 +41,12 @@ def create_dataset_table(params: CreateMseStepsParams):
   # Generating the header rows
   table += "<thead><tr>"
 
-  for i in range(len(params.dataset[0])): table += f"<th>x{i}</th>"
+  for i in range(len(params.dataset[0])): table += f"<th>x<sub>{i}</sub></th>"
 
   table += "<th>y</th>"
   table += "<th>h</th>"
-  table += "<th>δ</th>"
+  table += "<th>δ (y - h)</th>"
+  table += "<th>δ<sup>2</sup> (y - h)<sup>2</sup></th>"
 
   table += "</tr></thead>"
 
@@ -59,6 +60,7 @@ def create_dataset_table(params: CreateMseStepsParams):
     table += f"<td>{params.real_values[i]: .{params.precision}f}</td>"
     table += f"<td>{params.predicted_values[i]: .{params.precision}f}</td>"
     table += f"<td>{params.errors[i]: .{params.precision}f}</td>"
+    table += f"<td>{params.errors[i] * params.errors[i]: .{params.precision}f}</td>"
 
     table += "</tr>"
 
