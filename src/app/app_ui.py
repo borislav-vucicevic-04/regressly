@@ -208,7 +208,7 @@ class AppUI:
     )
     # Fixed: changed pady to (0, Spacing.PADY)
     self.btn_apply_gradient_descent.grid(row=1, column=1, padx=(Spacing.PADX, 0), pady=(0, Spacing.PADY), sticky="w")
-    self.btn_apply_gradient_descent.bind("<Button-1>", self.calculate_mse)
+    self.btn_apply_gradient_descent.bind("<Button-1>", self.apply_gradient_descent)
   def __create_dataset_controls_section__(self):
     self.frame_dataset_controls_section = ctk.CTkFrame(
       master=self.widget_wrapper,
@@ -382,5 +382,6 @@ class AppUI:
   def delete_rows(self, event): pass
   def add_row(self, event): pass
   def calculate_mse(self, event): pass
+  def apply_gradient_descent(self, event): pass
   def on_select_dataset_sheet(self, event): pass
   def on_select_weights_sheet(self, event): pass
