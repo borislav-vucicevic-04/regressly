@@ -26,3 +26,15 @@ class CreateMseStepsParams:
 class GradientDescentResult:
   updated_weights: list[float]
   gradient_components: list[list[float]]
+
+@dataclass(kw_only=True)
+class CreateGradientDescentStepsParams:
+  weights: list[float]
+  dataset: list[list[float]]
+  real_values: list[float]
+  predicted_values: list[float]
+  errors: list[float]
+  learning_rate: float
+  gradient_components: list[list[float]]
+  updated_weights: list[float]
+  print_settings: PrintSettings = field(default_factory=PrintSettings)
