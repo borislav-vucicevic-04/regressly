@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from tksheet import Sheet
-from components import PrecisionSection, CalculationsSection, InputSizeControlsSection
+from components import *
 from constants.constants import Colors
 from constants.constants import Spacing
 from constants.constants import Fonts
@@ -98,51 +98,15 @@ class AppUI:
     self.calculations_section.btn_calculate_mse.bind("<Button-1>", self.calculate_mse)
     self.calculations_section.btn_apply_gradient_descent.bind("<Button-1>", self.apply_gradient_descent)
   def __create_dataset_controls_section__(self):
-    self.frame_dataset_controls_section = ctk.CTkFrame(
+    self.dataset_controls_section = DatasetControlsSection(
       master=self.widget_wrapper,
       fg_color=Colors.WHITE
     )
     # Ensure the section frame itself aligns to the left of its grid cell
-    self.frame_dataset_controls_section.grid(row=2, column=1, sticky="w")
+    self.dataset_controls_section.grid(row=2, column=1, sticky="w")
+    self.dataset_controls_section.btn_add_row.bind("<Button-1>", self.add_row)
+    self.dataset_controls_section.btn_delete_rows.bind("<Button-1>", self.delete_rows)
 
-    # Creating section title
-    self.lbl_dataset_controls_title = ctk.CTkLabel(
-      master=self.frame_dataset_controls_section,
-      text="Dataset controls:",
-      text_color=Colors.BLACK,
-      font=Fonts.SECTION_TITLE,
-      anchor="w"
-    )
-    # Fixed: changed pady to (0, Spacing.PADY) to match Precision section
-    self.lbl_dataset_controls_title.grid(row=0, column=0, columnspan=2, sticky="w", pady=(0, Spacing.PADY))
-
-    ## Creating button for deleting rows
-    self.btn_delete_row = ctk.CTkButton(
-      master=self.frame_dataset_controls_section,
-      text="Delete row",
-      text_color=Colors.WHITE,
-      fg_color=Colors.RED,
-      hover_color=Colors.LIGHTRED,
-      cursor="hand2",
-      width=Spacing.BUTTON_WIDTH,
-      font=Fonts.LABEL
-    )
-    self.btn_delete_row.grid(row=1, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="w")
-    self.btn_delete_row.bind("<Button-1>", self.delete_rows)
-
-    ## Creating button for adding rows
-    self.btn_add_row = ctk.CTkButton(
-      master=self.frame_dataset_controls_section,
-      text="Add row",
-      text_color=Colors.WHITE,
-      fg_color=Colors.GREEN,
-      hover_color=Colors.LIGHTGREEN,
-      cursor="hand2",
-      width=Spacing.BUTTON_WIDTH,
-      font=Fonts.LABEL
-    )
-    self.btn_add_row.grid(row=1, column=1, padx=(Spacing.PADX, 0), pady=(0, Spacing.PADY), sticky="w")
-    self.btn_add_row.bind("<Button-1>", self.add_row)
   def __create_weights_section__(self):  
     self.frame_weights_section = ctk.CTkFrame(
       master=self.widget_wrapper,
