@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from tksheet import Sheet
-from components import PrecisionSection
+from components import PrecisionSection, CalculationsSection
 from constants.constants import Colors
 from constants.constants import Spacing
 from constants.constants import Fonts
@@ -128,53 +128,14 @@ class AppUI:
     self.btn_increase_input.grid(row=1, column=1, padx=(Spacing.PADX, 0), pady=(0, Spacing.PADY), sticky="w")
     self.btn_increase_input.bind("<Button-1>", self.increase_input_size)
   def __create_calculations_section__(self):
-    self.frame_calculations_section = ctk.CTkFrame(
+    self.calculations_section = CalculationsSection(
       master=self.widget_wrapper,
       fg_color=Colors.WHITE
     )
     # Ensure the section frame itself aligns to the left of its grid cell
-    self.frame_calculations_section.grid(row=1, column=1, sticky="w")
-
-    # Creating section title
-    self.lbl_calculations_title = ctk.CTkLabel(
-      master=self.frame_calculations_section,
-      text="Calculations:",
-      text_color=Colors.BLACK,
-      font=Fonts.SECTION_TITLE,
-      anchor="w"
-    )
-    # Fixed: changed pady to (0, Spacing.PADY) to match Precision section
-    self.lbl_calculations_title.grid(row=0, column=0, columnspan=2, sticky="w", pady=(0, Spacing.PADY))
-
-    # Creating button for calculating mse
-    self.btn_calculate_mse = ctk.CTkButton(
-      master=self.frame_calculations_section,
-      text="Calculate MSE",
-      text_color=Colors.WHITE,
-      fg_color=Colors.BLUE,
-      hover_color=Colors.LIGHTBLUE,
-      cursor="hand2",
-      width=Spacing.BUTTON_WIDTH,
-      font=Fonts.LABEL
-    )
-    # Fixed: changed pady to (0, Spacing.PADY) so it doesn't push away from the title
-    self.btn_calculate_mse.grid(row=1, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="w")
-    self.btn_calculate_mse.bind("<Button-1>", self.calculate_mse)
-
-    # Creating button for applying gradient descent
-    self.btn_apply_gradient_descent = ctk.CTkButton(
-      master=self.frame_calculations_section,
-      text="Apply GD",
-      text_color=Colors.WHITE,
-      fg_color=Colors.BLUE,
-      hover_color=Colors.LIGHTBLUE,
-      cursor="hand2",
-      width=Spacing.BUTTON_WIDTH,
-      font=Fonts.LABEL
-    )
-    # Fixed: changed pady to (0, Spacing.PADY)
-    self.btn_apply_gradient_descent.grid(row=1, column=1, padx=(Spacing.PADX, 0), pady=(0, Spacing.PADY), sticky="w")
-    self.btn_apply_gradient_descent.bind("<Button-1>", self.apply_gradient_descent)
+    self.calculations_section.grid(row=1, column=1, sticky="w")
+    self.calculations_section.btn_calculate_mse.bind("<Button-1>", self.calculate_mse)
+    self.calculations_section.btn_apply_gradient_descent.bind("<Button-1>", self.apply_gradient_descent)
   def __create_dataset_controls_section__(self):
     self.frame_dataset_controls_section = ctk.CTkFrame(
       master=self.widget_wrapper,
