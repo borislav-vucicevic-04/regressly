@@ -7,6 +7,7 @@ class WeightsSection(WeightsSectionUI):
   def add_column_at(self, index, header):
     self.sheet.insert_column(idx=index, column=[f"{0: .{self.__precision__}f}"])
     self.sheet.headers(header, index=index)
+    self.deselect()
 
   def apply_precision(self, precision):
     # Applying precision to weights

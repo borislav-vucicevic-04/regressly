@@ -34,6 +34,8 @@ class AppUI:
     self.__create_weights_section__()
     # INTERFACE FOR THE DATASET
     self.__create_dataset_section__()
+    # BINDING METHODS
+    self.__bind_methods__()
   def __setup_mainwindow__(self):
     self.mainwindow.title("My first CTK app")
     ## Desired window size
@@ -104,8 +106,6 @@ class AppUI:
     )
     # Ensure the section frame itself aligns to the left of its grid cell
     self.dataset_controls_section.grid(row=2, column=1, sticky="w")
-    self.dataset_controls_section.btn_add_row.bind("<Button-1>", self.add_row)
-    self.dataset_controls_section.btn_delete_rows.bind("<Button-1>", self.delete_rows)
 
   def __create_weights_section__(self):  
     self.weights_section = WeightsSection(
@@ -115,78 +115,32 @@ class AppUI:
     )
     # sticky="ew" makes the section frame fill the width of the widget_wrapper
     self.weights_section.grid(row=3, column=0, columnspan=3, sticky="ew")
-    self.weights_section.sheet.extra_bindings([("cell_select", self.on_select_weights_sheet)])
     
   def __create_dataset_section__(self):
-    self.frame_dataset_section = ctk.CTkFrame(
+    self.dataset_section = DatasetSection(
       master=self.widget_wrapper,
+      precision=self.precision,
       fg_color=Colors.WHITE
     )
     # sticky="nsew" allows the section itself to grow portraitly within widget_wrapper
-    self.frame_dataset_section.grid(row=4, column=0, columnspan=3, sticky="nsew")
+    self.dataset_section.grid(row=4, column=0, columnspan=3, sticky="nsew")
     
     # Configure column 1 to take up landscape space
-    self.frame_dataset_section.grid_columnconfigure(1, weight=1)
+    self.dataset_section.grid_columnconfigure(1, weight=1)
     
     # NEW: Configure row 2 (the sheet row) to take up all remaining portrait space
-    self.frame_dataset_section.grid_rowconfigure(1, weight=1)
-
-    ## Creating section title
-    self.lbl_dataset_title = ctk.CTkLabel(
-      master=self.frame_dataset_section,
-      text="Dataset:",
-      text_color=Colors.BLACK,
-      font=Fonts.SECTION_TITLE,
-      anchor="w"
-    )
-    self.lbl_dataset_title.grid(row=0, column=0, columnspan=2, pady=(0, Spacing.PADY), sticky="w")
-
-    # Creating dataset sheet wrapper
-    self.dataset_sheet_wrapper = ctk.CTkFrame(
-      master=self.frame_dataset_section,
-      border_color=Colors.BLACK,
-      corner_radius=0,
-      fg_color=Colors.WHITE,
-      border_width=1
-    )
-    # sticky="nsew" is critical here to fill the weighted row and column
-    self.dataset_sheet_wrapper.grid(row=1, column=0, columnspan=2, sticky="nsew")
-    
-    # Creating dataset sheet
-    self.dataset_sheet = Sheet(
-      self.dataset_sheet_wrapper,
-      row_height=20,
-      header=["x0", "x1", "x2", "x3", "y"],
-      data=[[f"{1: .2f}", f"{0: .2f}", f"{0: .2f}", f"{0: .2f}", f"{0: .2f}"]],
-      frame_bg=Colors.BLACK
-    )
-    self.dataset_sheet.enable_bindings((
-      "single_select", 
-      "row_select", 
-      "drag_select", 
-      "column_width_resize", 
-      "arrowkeys", 
-      "right_click_popup_menu", 
-      "copy", 
-      "paste", 
-      "edit_cell"
-    ))
-    self.dataset_sheet.set_options(auto_resize_columns=True)
-    self.dataset_sheet.readonly_cells(column=0)
-    self.dataset_sheet.edit_validation(self.validate_cell_entry)
-    self.dataset_sheet.extra_bindings([("cell_select", self.on_select_dataset_sheet)])
-    # pack(expand=True) ensures the sheet fills the wrapper frame
-    self.dataset_sheet.pack(fill="both", expand=True, padx=2, pady=(2, 3))
+    self.dataset_section.grid_rowconfigure(1, weight=1)
   
+  def __bind_methods__(self):
+    self.dataset_controls_section.btn_add_row.bind("<Button-1>", lambda e: self.dataset_section.add_row())
+    self.dataset_controls_section.btn_delete_rows.bind("<Button-1>", lambda e: self.dataset_section.delete_rows())
+    self.weights_section.sheet.extra_bindings([("cell_select", lambda e: self.dataset_section.deselect())])
+    self.dataset_section.sheet.extra_bindings([("cell_select", lambda e: self.weights_section.deselect())])
+
   # Method to run the application
   def run(self): pass
   def change_precision(self, event): pass
   def decrease_input_size(self, event): pass
   def increase_input_size(self, event): pass
-  def validate_cell_entry(self, event): pass
-  def delete_rows(self, event): pass
-  def add_row(self, event): pass
   def calculate_mse(self, event): pass
   def apply_gradient_descent(self, event): pass
-  def on_select_dataset_sheet(self, event): pass
-  def on_select_weights_sheet(self, event): pass
