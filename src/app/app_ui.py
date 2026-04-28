@@ -1,5 +1,6 @@
 import customtkinter as ctk
 from tksheet import Sheet
+from components import PrecisionSection
 from constants.constants import Colors
 from constants.constants import Spacing
 from constants.constants import Fonts
@@ -68,50 +69,15 @@ class AppUI:
     )
     self.lbl_title.grid(row=0, column=0, pady=(0, Spacing.PADY), sticky="nswe", columnspan=2)
   def __create_precision_section__(self):
-    # Creating frame wrapper for the section
-    self.frame_precision_section = ctk.CTkFrame(
+    self.precision_section = PrecisionSection(
       master=self.widget_wrapper,
       fg_color=Colors.WHITE
     )
     # Ensure the frame sits on the left of the wrapper
-    self.frame_precision_section.grid(row=1, column=0, sticky="w")
+    self.precision_section.grid(row=1, column=0, sticky="w")
+    self.precision_section.set_display(f"Current precision: {self.precision}")
+    self.precision_section.btn_change_precision.bind("<Button-1>", self.change_precision)
 
-    ## Creating section title
-    self.lbl_precision_title = ctk.CTkLabel(
-      master=self.frame_precision_section,
-      text_color=Colors.BLACK,
-      text="Change precision:",
-      anchor="w",
-      font=Fonts.SECTION_TITLE
-    )
-    # Align to the left margin
-    self.lbl_precision_title.grid(row=0, column=0, pady=(0, Spacing.PADY), sticky="w")
-
-    ## Adding change button
-    self.btn_change_precision = ctk.CTkButton(
-      master=self.frame_precision_section,
-      text="Change precision",
-      text_color=Colors.WHITE,
-      fg_color=Colors.BLUE,
-      hover_color=Colors.LIGHTBLUE,
-      cursor="hand2",
-      width=Spacing.BUTTON_WIDTH,
-      font=Fonts.LABEL
-    )
-    # Align to the left margin
-    self.btn_change_precision.grid(row=1, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="w")
-    self.btn_change_precision.bind("<Button-1>", self.change_precision)
-
-    ## Creating label for displaying the current precision
-    self.lbl_precision = ctk.CTkLabel(
-      master=self.frame_precision_section,
-      text_color=Colors.BLACK,
-      textvariable=self.lbl_precision_var,
-      anchor="w", # Align text left
-      font=Fonts.LABEL
-    )
-    # Align to the left margin
-    self.lbl_precision.grid(row=1, column=1, pady=(0, Spacing.PADY), sticky="w")
   def __create_input_size_section__(self):
     # creating section frame
     self.frame_input_size_section = ctk.CTkFrame(

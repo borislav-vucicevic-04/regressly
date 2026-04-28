@@ -36,7 +36,7 @@ class App(AppUI):
         self.precision = result
         break # Success
     
-    self.lbl_precision_var.set(f"Current precision: {self.precision}")
+    self.precision_section.set_display(f"Current precision: {self.precision}")
     self.__apply_precision__()
 
   def decrease_input_size(self, event):
