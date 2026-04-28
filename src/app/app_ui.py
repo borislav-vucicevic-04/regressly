@@ -1,6 +1,6 @@
 import customtkinter as ctk
 from tksheet import Sheet
-from components import PrecisionSection, CalculationsSection
+from components import PrecisionSection, CalculationsSection, InputSizeControlsSection
 from constants.constants import Colors
 from constants.constants import Spacing
 from constants.constants import Fonts
@@ -80,53 +80,14 @@ class AppUI:
 
   def __create_input_size_section__(self):
     # creating section frame
-    self.frame_input_size_section = ctk.CTkFrame(
+    self.input_size_controls_section = InputSizeControlsSection(
       master=self.widget_wrapper,
       fg_color=Colors.WHITE
     )
     # Ensure the frame sits on the left of its grid cell
-    self.frame_input_size_section.grid(row=2, column=0, sticky="w")
-
-    ## Creating section title
-    self.lbl_input_size_title = ctk.CTkLabel(
-      master=self.frame_input_size_section,
-      text_color=Colors.BLACK,
-      text="Change input size:",
-      anchor="w",
-      font=Fonts.SECTION_TITLE
-    )
-    # Align to the left margin
-    self.lbl_input_size_title.grid(row=0, column=0, pady=(0, Spacing.PADY), sticky="w")
-
-    ## adding decrease button
-    self.btn_decrease_input = ctk.CTkButton(
-      master=self.frame_input_size_section,
-      text="Decrease",
-      text_color=Colors.WHITE,
-      fg_color=Colors.RED,
-      hover_color=Colors.LIGHTRED,
-      cursor="hand2",
-      width=Spacing.BUTTON_WIDTH,
-      font=Fonts.LABEL
-    )
-    # Changed sticky to "w"
-    self.btn_decrease_input.grid(row=1, column=0, padx=(0, Spacing.PADX), pady=(0, Spacing.PADY), sticky="w")
-    self.btn_decrease_input.bind("<Button-1>", self.decrease_input_size)
-
-    ## adding increase button
-    self.btn_increase_input = ctk.CTkButton(
-      master=self.frame_input_size_section,
-      text="Increase",
-      text_color=Colors.WHITE,
-      fg_color=Colors.GREEN,
-      hover_color=Colors.LIGHTGREEN,
-      cursor="hand2",
-      width=Spacing.BUTTON_WIDTH,
-      font=Fonts.LABEL
-    )
-    # Changed sticky to "w"
-    self.btn_increase_input.grid(row=1, column=1, padx=(Spacing.PADX, 0), pady=(0, Spacing.PADY), sticky="w")
-    self.btn_increase_input.bind("<Button-1>", self.increase_input_size)
+    self.input_size_controls_section.grid(row=2, column=0, sticky="w")
+    self.input_size_controls_section.btn_decrease.bind("<Button-1>", self.decrease_input_size)
+    self.input_size_controls_section.btn_increase.bind("<Button-1>", self.increase_input_size)
   def __create_calculations_section__(self):
     self.calculations_section = CalculationsSection(
       master=self.widget_wrapper,
