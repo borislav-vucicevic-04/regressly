@@ -108,62 +108,15 @@ class AppUI:
     self.dataset_controls_section.btn_delete_rows.bind("<Button-1>", self.delete_rows)
 
   def __create_weights_section__(self):  
-    self.frame_weights_section = ctk.CTkFrame(
+    self.weights_section = WeightsSection(
       master=self.widget_wrapper,
-      fg_color=Colors.WHITE
+      fg_color=Colors.WHITE,
+      precision=self.precision
     )
     # sticky="ew" makes the section frame fill the width of the widget_wrapper
-    self.frame_weights_section.grid(row=3, column=0, columnspan=3, sticky="ew")
+    self.weights_section.grid(row=3, column=0, columnspan=3, sticky="ew")
+    self.weights_section.sheet.extra_bindings([("cell_select", self.on_select_weights_sheet)])
     
-    # This tells the frame to expand column 0 to fill all available space
-    self.frame_weights_section.grid_columnconfigure(0, weight=1)
-
-    # Creating section title
-    self.lbl_weights_title = ctk.CTkLabel(
-      master=self.frame_weights_section,
-      text="Function weights:",
-      text_color=Colors.BLACK,
-      font=Fonts.SECTION_TITLE,
-      anchor="w"
-    )
-    # sticky="w" to keep the title left-aligned
-    self.lbl_weights_title.grid(row=0, column=0, pady=(0, Spacing.PADY), sticky="w")
-
-    # Creating weights sheet wrapper
-    self.weights_sheet_wrapper = ctk.CTkFrame(
-      master=self.frame_weights_section,
-      border_color=Colors.BLACK,
-      corner_radius=0,
-      fg_color=Colors.WHITE,
-      border_width=1
-    )
-    # sticky="nsew" here fills the allocated column space
-    self.weights_sheet_wrapper.grid(row=1, column=0, sticky="nsew", padx=2, pady=(0, Spacing.PADY))
-    
-    # Creating weights sheet
-    self.weights_sheet = Sheet(
-      self.weights_sheet_wrapper,
-      row_height=20,
-      height=46,
-      header=["w0", "w1", "w2", "w3"],
-      data=[[f"{1: .2f}", f"{0: .2f}", f"{0: .2f}", f"{0: .2f}"]],
-      frame_bg=Colors.BLACK
-    )
-    self.weights_sheet.enable_bindings((
-      "single_select", 
-      "row_select", 
-      "column_width_resize", 
-      "arrowkeys", 
-      "right_click_popup_menu", 
-      "copy", 
-      "paste", 
-      "edit_cell"
-    ))
-    self.weights_sheet.hide("y_scrollbar")
-    self.weights_sheet.set_options(auto_resize_columns=True)
-    self.weights_sheet.edit_validation(self.validate_cell_entry)
-    self.weights_sheet.pack(fill="both", expand=True, padx=2, pady=(2, 3))
-    self.weights_sheet.extra_bindings([("cell_select", self.on_select_weights_sheet)])
   def __create_dataset_section__(self):
     self.frame_dataset_section = ctk.CTkFrame(
       master=self.widget_wrapper,

@@ -45,7 +45,7 @@ class App(AppUI):
     if self.input_size == 1: return
 
     # Otherwise, continue the execution
-    self.weights_sheet.delete_columns(columns=[self.input_size])
+    self.weights_section.remove_column_at(self.input_size)
     self.dataset_sheet.delete_columns(columns=[self.input_size])
     self.input_size -= 1
     self.mainwindow.mainloop()
@@ -58,17 +58,17 @@ class App(AppUI):
     # Otherwise, continue the execution
     dataset_filler_values = [f"{0: .{self.precision}f}"] * self.dataset_sheet.total_rows()
     self.input_size += 1
-    self.weights_sheet.headers([f"w{i}" for i in range(self.input_size + 1)])
-    self.weights_sheet.insert_column(column=[f"{0: .{self.precision}f}"], idx=self.input_size)
+    self.weights_section.add_column_at(index=self.input_size, header=f"w{self.input_size}")
     self.dataset_sheet.headers([f"x{i}" for i in range(self.input_size + 1)] + ["y"])
     self.dataset_sheet.insert_column(column=dataset_filler_values, idx=self.input_size)
 
   def validate_cell_entry(self, event):
-    try:
-      value = float(event.value) 
-      return f"{value: .{self.precision}f}"
-    except ValueError:
-      return None
+    return event.value
+    # try:
+    #   value = float(event.value) 
+    #   return f"{value: .{self.precision}f}"
+    # except ValueError:
+    #   return None
     
   def add_row(self, event):
     new_row_idx = self.dataset_sheet.get_total_rows()
@@ -92,7 +92,7 @@ class App(AppUI):
       return
 
     # Otherwise continue with the calculation
-    weights = self.__get_weights__()
+    weights = self.weights_section.get_weights()
     dataset = self.__get_dataset__()
     real_values = self.__get_real_values()
     predicted_values = hypothesis(weights, dataset)
@@ -138,7 +138,7 @@ class App(AppUI):
       else: messagebox.showerror("Learning rate error", "The learning rate must be a number greather than or equal to 0.")
 
     # Otherwise continue with the calculation
-    weights = self.__get_weights__()
+    weights = self.weights_section.get_weights()
     dataset = self.__get_dataset__()
     real_values = self.__get_real_values()
     predicted_values = hypothesis(weights, dataset)
@@ -153,15 +153,11 @@ class App(AppUI):
     messagebox.showinfo("Applying gradient descent", f"Updated weights: {", ".join([f"{weight: .{self.precision}f}" for weight in gradient_descent_result.updated_weights])}")
 
   def on_select_dataset_sheet(self, event):
-    self.weights_sheet.deselect()
-    self.weights_sheet.redraw()
+    self.weights_section.deselect()
   
   def on_select_weights_sheet(self, event):
     self.dataset_sheet.deselect()
     self.dataset_sheet.redraw()
-
-  def __get_weights__(self) -> list[float]:
-    return [float(elem) for elem in self.weights_sheet.get_data()]
 
   def __get_real_values(self) -> list[float]:
     return [float(elem) for elem in self.dataset_sheet.get_column_data(self.dataset_sheet.total_columns() - 1)]
@@ -213,10 +209,8 @@ class App(AppUI):
 
   def __apply_precision__(self):
     # Applying precision to weights
-    weights = self.__get_weights__()
     dataset = self.__get_dataset__()
     real_values = self.__get_real_values()
-    updated_weights_sheet = [[f"{elem:.{self.precision}f}" for elem in weights]]
     updated_dataset_sheet = []
 
     for i in range(len(dataset)):
@@ -224,11 +218,10 @@ class App(AppUI):
       rounded_real_value = f"{real_values[i]:.{self.precision}f}"
       updated_dataset_sheet.append(rounded_dataset + [rounded_real_value])
 
-    self.weights_sheet.set_sheet_data(updated_weights_sheet)
     self.dataset_sheet.set_sheet_data(updated_dataset_sheet)
 
-    self.weights_sheet.refresh()
     self.dataset_sheet.refresh()
+    self.weights_section.apply_precision(self.precision)
   
   def __get_precision__(self):
     # 1. Create the dialog
