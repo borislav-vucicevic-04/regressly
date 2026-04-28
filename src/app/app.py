@@ -50,7 +50,7 @@ class App(AppUI):
     self.weights_section.remove_column_at(self.input_size)
     self.dataset_section.remove_column_at(self.input_size)
     self.input_size -= 1
-  
+
   def increase_input_size(self, event):
     # GUARDING CLAUSE:
     # If the input size is equal to one, exit the method
@@ -161,12 +161,7 @@ class App(AppUI):
       else: return -1 # Out of range
     except Exception as e:
       return -1 # Not a number
-      
 
-  def __apply_precision__(self):
-    self.weights_section.apply_precision(self.precision)
-    self.dataset_section.apply_precision(self.precision)
-  
   def __get_precision__(self):
     # 1. Create the dialog
     dialog = ctk.CTkInputDialog(text="Enter a number (0-5):", title="Change Precision")

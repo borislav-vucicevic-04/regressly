@@ -5,8 +5,11 @@ from tksheet import Sheet
 class DatasetSectionUI(ctk.CTkFrame):
   def __init__(self, master, precision: int = 2, **kwargs):
     super().__init__(master, **kwargs)
-    
+    # Private component properties
     self.__precision__ = precision
+    # Grid setup
+    self.grid_columnconfigure(1, weight=1)
+    self.grid_rowconfigure(1, weight=1)
 
     ## Creating section title
     self.lbl_title = ctk.CTkLabel(

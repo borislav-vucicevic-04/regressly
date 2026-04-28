@@ -7,35 +7,62 @@ from constants.constants import Fonts
 
 class AppUI:
   def __init__(self, master=None):
-    # CREATING MAIN WINDOW
-    self.mainwindow = ctk.CTk(fg_color=Colors.WHITE)
-    # CREATING APP PROPERTIES
-    ## current input size of the function
-    self.input_size = 3
-    ## current precision
-    self.precision = 2
-    ## label value controller
-    self.lbl_precision_var = ctk.StringVar(value=f"Current precision: {self.precision}")
-    # SETUP MAINWINDOW
-    self.__setup_mainwindow__()
-    # CREATING FRAME FOR COMPONENTS
-    self.__create_widget_wrapper__()
-    # TITLE LABEL
-    self.__create_lbl_title__()
-    # INTERFACE FOR SETTING THE PRECISION OF NUMBERS
-    self.__create_precision_section__()
-    # SECTION FOR CALCULATIONS
-    self.__create_calculations_section__()
-    # SECTION FOR DATASET CONTROLS
-    self.__create_dataset_controls_section__()
-    # INTERFACE FOR SETTING THE FUNCTION INPUT SIZE
-    self.__create_input_size_section__()
-    # INTERFACE FOR SETTING FUNCTION WEIGHTS
-    self.__create_weights_section__()
-    # INTERFACE FOR THE DATASET
-    self.__create_dataset_section__()
-    # BINDING METHODS
-    self.__bind_methods__()
+    self.mainwindow = ctk.CTk(fg_color=Colors.WHITE) # Creating main window
+    
+    self.input_size = 3 # current input size of the function
+    self.precision = 2 # current precision
+
+    self.__create_sections_container__() # Creating container for sections
+    self.__create_title__() # Creating and positioning title label
+    self.__create_sections__() # Creating sections
+    self.__position_sections__() # Positioning sections
+    self.__bind_methods__() # Biding App methods to children of section components
+    self.__setup_mainwindow__() # Setting up the window
+  
+  def __create_sections_container__(self):
+    self.sections_container: ctk.CTkFrame = ctk.CTkFrame(master=self.mainwindow, fg_color=Colors.WHITE)
+    self.sections_container.pack(fill="both", expand=True, padx=Spacing.PADX, pady=Spacing.PADY)
+    self.sections_container.grid_columnconfigure((0, 1), weight=1)
+    self.sections_container.grid_rowconfigure(4, weight=1)
+
+  def __create_title__(self):
+    self.lbl_title = ctk.CTkLabel(
+      master=self.sections_container,
+      text_color=Colors.BLACK,
+      text="REGRESSLY",
+      anchor="center",
+      font=Fonts.APP_TITLE
+    )
+    self.lbl_title.grid(row=0, column=0, pady=(0, Spacing.PADY), sticky="nswe", columnspan=2)
+
+  def __create_sections__(self):
+    self.precision_section = PrecisionSection(master=self.sections_container, fg_color=Colors.WHITE)
+    self.precision_section.set_display(f"Current precision: {self.precision}")
+    self.calculations_section = CalculationsSection(master=self.sections_container, fg_color=Colors.WHITE)
+    self.dataset_controls_section = DatasetControlsSection(master=self.sections_container, fg_color=Colors.WHITE)
+    self.input_size_controls_section = InputSizeControlsSection(master=self.sections_container, fg_color=Colors.WHITE)
+    self.weights_section = WeightsSection(master=self.sections_container, fg_color=Colors.WHITE, precision=self.precision)
+    self.dataset_section = DatasetSection(master=self.sections_container, precision=self.precision, fg_color=Colors.WHITE)
+  
+  def __position_sections__(self):
+    self.precision_section.grid(row=1, column=0, sticky="w")
+    self.calculations_section.grid(row=1, column=1, sticky="w")
+    self.dataset_controls_section.grid(row=2, column=1, sticky="w")
+    self.input_size_controls_section.grid(row=2, column=0, sticky="w")
+    self.weights_section.grid(row=3, column=0, columnspan=3, sticky="ew")
+    self.dataset_section.grid(row=4, column=0, columnspan=3, sticky="nsew")
+
+  def __bind_methods__(self):
+    self.precision_section.btn_change_precision.bind("<Button-1>", self.change_precision)
+    self.calculations_section.btn_calculate_mse.bind("<Button-1>", self.calculate_mse)
+    self.calculations_section.btn_apply_gradient_descent.bind("<Button-1>", self.apply_gradient_descent)
+    self.input_size_controls_section.btn_decrease.bind("<Button-1>", self.decrease_input_size)
+    self.input_size_controls_section.btn_increase.bind("<Button-1>", self.increase_input_size)
+    self.dataset_controls_section.btn_add_row.bind("<Button-1>", lambda e: self.dataset_section.add_row())
+    self.dataset_controls_section.btn_delete_rows.bind("<Button-1>", lambda e: self.dataset_section.delete_rows())
+    self.weights_section.sheet.extra_bindings([("cell_select", lambda e: self.dataset_section.deselect())])
+    self.dataset_section.sheet.extra_bindings([("cell_select", lambda e: self.weights_section.deselect())])
+
   def __setup_mainwindow__(self):
     self.mainwindow.title("My first CTK app")
     ## Desired window size
@@ -53,91 +80,7 @@ class AppUI:
     ## Set geometry
     self.mainwindow.geometry(f"{window_width}x{window_height}+{x}+{y}")
     self.mainwindow.minsize(width=window_width, height=window_height)
-  def __create_widget_wrapper__(self):
-    self.widget_wrapper: ctk.CTkFrame = ctk.CTkFrame(
-      master=self.mainwindow,
-      fg_color=Colors.WHITE
-    )
-    self.widget_wrapper.pack(fill="both", expand=True, padx=Spacing.PADX, pady=Spacing.PADY)
-    self.widget_wrapper.grid_columnconfigure((0, 1), weight=1)
-    self.widget_wrapper.grid_rowconfigure(4, weight=1)
-  def __create_lbl_title__(self):
-    self.lbl_title = ctk.CTkLabel(
-      master=self.widget_wrapper,
-      text_color=Colors.BLACK,
-      text="REGRESSLY",
-      anchor="center",
-      font=Fonts.APP_TITLE
-    )
-    self.lbl_title.grid(row=0, column=0, pady=(0, Spacing.PADY), sticky="nswe", columnspan=2)
-  def __create_precision_section__(self):
-    self.precision_section = PrecisionSection(
-      master=self.widget_wrapper,
-      fg_color=Colors.WHITE
-    )
-    # Ensure the frame sits on the left of the wrapper
-    self.precision_section.grid(row=1, column=0, sticky="w")
-    self.precision_section.set_display(f"Current precision: {self.precision}")
-    self.precision_section.btn_change_precision.bind("<Button-1>", self.change_precision)
 
-  def __create_input_size_section__(self):
-    # creating section frame
-    self.input_size_controls_section = InputSizeControlsSection(
-      master=self.widget_wrapper,
-      fg_color=Colors.WHITE
-    )
-    # Ensure the frame sits on the left of its grid cell
-    self.input_size_controls_section.grid(row=2, column=0, sticky="w")
-    self.input_size_controls_section.btn_decrease.bind("<Button-1>", self.decrease_input_size)
-    self.input_size_controls_section.btn_increase.bind("<Button-1>", self.increase_input_size)
-  def __create_calculations_section__(self):
-    self.calculations_section = CalculationsSection(
-      master=self.widget_wrapper,
-      fg_color=Colors.WHITE
-    )
-    # Ensure the section frame itself aligns to the left of its grid cell
-    self.calculations_section.grid(row=1, column=1, sticky="w")
-    self.calculations_section.btn_calculate_mse.bind("<Button-1>", self.calculate_mse)
-    self.calculations_section.btn_apply_gradient_descent.bind("<Button-1>", self.apply_gradient_descent)
-  def __create_dataset_controls_section__(self):
-    self.dataset_controls_section = DatasetControlsSection(
-      master=self.widget_wrapper,
-      fg_color=Colors.WHITE
-    )
-    # Ensure the section frame itself aligns to the left of its grid cell
-    self.dataset_controls_section.grid(row=2, column=1, sticky="w")
-
-  def __create_weights_section__(self):  
-    self.weights_section = WeightsSection(
-      master=self.widget_wrapper,
-      fg_color=Colors.WHITE,
-      precision=self.precision
-    )
-    # sticky="ew" makes the section frame fill the width of the widget_wrapper
-    self.weights_section.grid(row=3, column=0, columnspan=3, sticky="ew")
-    
-  def __create_dataset_section__(self):
-    self.dataset_section = DatasetSection(
-      master=self.widget_wrapper,
-      precision=self.precision,
-      fg_color=Colors.WHITE
-    )
-    # sticky="nsew" allows the section itself to grow portraitly within widget_wrapper
-    self.dataset_section.grid(row=4, column=0, columnspan=3, sticky="nsew")
-    
-    # Configure column 1 to take up landscape space
-    self.dataset_section.grid_columnconfigure(1, weight=1)
-    
-    # NEW: Configure row 2 (the sheet row) to take up all remaining portrait space
-    self.dataset_section.grid_rowconfigure(1, weight=1)
-  
-  def __bind_methods__(self):
-    self.dataset_controls_section.btn_add_row.bind("<Button-1>", lambda e: self.dataset_section.add_row())
-    self.dataset_controls_section.btn_delete_rows.bind("<Button-1>", lambda e: self.dataset_section.delete_rows())
-    self.weights_section.sheet.extra_bindings([("cell_select", lambda e: self.dataset_section.deselect())])
-    self.dataset_section.sheet.extra_bindings([("cell_select", lambda e: self.weights_section.deselect())])
-
-  # Method to run the application
   def run(self): pass
   def change_precision(self, event): pass
   def decrease_input_size(self, event): pass
