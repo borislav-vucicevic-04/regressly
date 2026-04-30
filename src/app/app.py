@@ -2,10 +2,10 @@ import customtkinter as ctk
 
 from .app_ui import AppUI
 from constants.constants import Colors
-from tkinter import messagebox, simpledialog
+from tkinter import messagebox
 from utils import *
 from models import CreateMseStepsParams
-from components import PrintDialog
+from components import PrintDialog, PrecisionDialog
 
 class App(AppUI):
   def __init__(self, master=None):
@@ -15,27 +15,15 @@ class App(AppUI):
     self.mainwindow.mainloop()
   
   def change_precision(self, event):
-    proceed = messagebox.askokcancel(
-      title="Change the precision",
-      message="Please keep in mind that this will round all weights and numbers in the dataset, and that this action is irreversible. To reverse it, you will need to change the precision again and manually retype the data!",
-      icon="warning"
-    )
+    # Open the dialog to change the precision
+    dialog = PrecisionDialog(self.mainwindow)
+    dialog.showDialog()
+    newPrecision = dialog.getPrecision();
 
-    # GUARDING CLAUSE: if user changed the mind and pressed cancel, exit the method immediately
-    if not proceed: return
+    # GUARDING CLAUSE: If user canceled, exit the method
+    if newPrecision is None: return
 
-    #OTHERWISE: Change the precision
-    newPrecision = 0;
-
-    while True:
-      result = self.__get_precision__()
-      
-      if result is None: return # Stop if user hits Cancel
-      elif result == -1: messagebox.showerror("Error", "You must enter a number between 0 and 5.")
-      else:
-        newPrecision = result
-        break # Success
-    
+    # OTHERWISE: Change the precision
     self.precision_section.set_display(f"Current precision: {newPrecision}")
     self.weights_section.apply_precision(newPrecision)
     self.dataset_section.apply_precision(newPrecision)
@@ -158,39 +146,6 @@ class App(AppUI):
     try:
       value = float(raw_input)
       if value >= 0: return value
-      else: return -1 # Out of range
-    except Exception as e:
-      return -1 # Not a number
-
-  def __get_precision__(self):
-    # 1. Create the dialog
-    dialog = ctk.CTkInputDialog(text="Enter a number (0-5):", title="Change Precision")
-    
-    # 2. Force dimensions update for centering
-    dialog.update_idletasks()
-    
-    # 3. Calculate center position relative to self.mainwindow
-    main_x = self.mainwindow.winfo_rootx()
-    main_y = self.mainwindow.winfo_rooty()
-    main_w = self.mainwindow.winfo_width()
-    main_h = self.mainwindow.winfo_height()
-    
-    dlg_w = dialog.winfo_width()
-    dlg_h = dialog.winfo_height()
-    
-    x = main_x + (main_w // 2) - (dlg_w // 2)
-    y = main_y + (main_h // 2) - (dlg_h // 2)
-    
-    # 4. Position dialog and capture input
-    dialog.geometry(f"+{x}+{y}")
-    raw_input = dialog.get_input()
-    
-    # 5. Logic: None = Cancel, -1 = Error, int = Success
-    if raw_input is None: return None
-      
-    try:
-      value = int(raw_input)
-      if 0 <= value <= 5: return value
       else: return -1 # Out of range
     except Exception as e:
       return -1 # Not a number

@@ -37,7 +37,7 @@ class PrintDialog(PrintDialogUI):
   
   def __handle_cancel__(self):
     self.__print_settings__ = None
-    self.destroy
+    self.destroy()
 
   def __handle_print__(self):
     try:
