@@ -38,3 +38,9 @@ class CreateGradientDescentStepsParams:
   gradient_components: list[list[float]]
   updated_weights: list[float]
   print_settings: PrintSettings = field(default_factory=PrintSettings)
+
+@dataclass(kw_only=True)
+class GDSettings:
+  epochs: int
+  batch_size: int
+  learning_rate: float

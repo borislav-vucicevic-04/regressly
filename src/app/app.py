@@ -5,7 +5,7 @@ from constants.constants import Colors
 from tkinter import messagebox
 from utils import *
 from models import CreateMseStepsParams
-from components import PrintDialog, PrecisionDialog
+from components import PrintDialog, PrecisionDialog, GDSettingsDialog
 
 class App(AppUI):
   def __init__(self, master=None):
@@ -90,17 +90,11 @@ class App(AppUI):
     if generate_pdf is None:
       return
     
-    learning_rate = 0
 
-    # Forcing user to choose learnign rate
-    while True:
-      learning_rate = self.__get_learning_rate__()
-      # Exit method if user clicked Cancel (cancellation indicated by None value)
-      if learning_rate is None: return;
-      # break the loop if user submitted valid value
-      elif learning_rate >= 0: break;
-      # Otherwise show error
-      else: messagebox.showerror("Learning rate error", "The learning rate must be a number greather than or equal to 0.")
+    dialog = GDSettingsDialog(self.mainwindow, batch_size_maximum=len(self.dataset_section.get_outputs()))
+    dialog.showDialog()
+
+    learning_rate = 0
 
     # Otherwise continue with the calculation
     weights = self.weights_section.get_weights()
