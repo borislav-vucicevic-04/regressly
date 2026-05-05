@@ -5,7 +5,7 @@ from constants.constants import Colors
 from tkinter import messagebox
 from utils import *
 from models import CreateMseStepsParams
-from components import PrintDialog, PrecisionDialog, GDSettingsDialog
+from components import PrintDialog, PrecisionDialog
 
 class App(AppUI):
   def __init__(self, master=None):
@@ -50,6 +50,13 @@ class App(AppUI):
     self.dataset_section.add_column_at(index=self.input_size, header=f"x{self.input_size}")
 
   def calculate_mse(self, event):
+    generate_pdf = messagebox.askyesnocancel("Calculate mean squared error", "Do you want to generate the PDF file with steps on how to find the solution as well?")
+
+    # GUARDING CLAUSE: If user presses cancel button, it means we changed his mind and we should exit the method
+    if generate_pdf is None:
+      return
+
+    # Otherwise continue with the calculation
     weights = self.weights_section.get_weights()
     dataset = self.dataset_section.get_inputs()
     real_values = self.dataset_section.get_outputs()
@@ -57,34 +64,24 @@ class App(AppUI):
     errors = calculate_errors(real_values, predicted_values)
     mse = mean_squared_error(errors)
 
-    # Prompt user to confirm if they want PDF file with result, just a result or cancel the action
-    generate_pdf = messagebox.askyesnocancel("Calculate mean squared error", "Do you want to generate the PDF file with steps on how to find the solution as well?")
+    if generate_pdf:
+      dialog = PrintDialog(self.mainwindow)
+      dialog.showDialog()
+      print_settings = dialog.getPrintSettings()
 
-    # GUARDING CLAUSE: If user presses cancel button, exit the method
-    if generate_pdf is None: 
-      return
-    # GUARDING CLAUSE: If user presses no, show the result with messageox and exit the method.
-    if not generate_pdf:
+      if print_settings is not None:
+        create_mse_steps(CreateMseStepsParams(
+          precision=self.precision,
+          weights=weights,
+          dataset=dataset,
+          real_values=real_values,
+          predicted_values=predicted_values,
+          errors=errors,
+          mse=mse,
+          print_settings=print_settings
+        ))
+    else:
       messagebox.showinfo("Calculated mean squared error", f"Mean squared error for this dataset is {mse}")
-      return
-    # Get Print Settings
-    dialog = PrintDialog(self.mainwindow)
-    dialog.showDialog()
-    print_settings = dialog.getPrintSettings()
-    # GUARDING CLAUSE: If user presses cancel, exit the method
-    if print_settings is None:
-      return
-    # OTHERWISE: Create PDF file with steps
-    create_mse_steps(CreateMseStepsParams(
-      precision=self.precision,
-      weights=weights,
-      dataset=dataset,
-      real_values=real_values,
-      predicted_values=predicted_values,
-      errors=errors,
-      mse=mse,
-      print_settings=print_settings
-    ))
 
   def apply_gradient_descent(self, event):
     generate_pdf = messagebox.askyesnocancel("Apply gradient descent", "Do you want to generate the PDF file with steps on how to find the solution as well?")
@@ -93,11 +90,17 @@ class App(AppUI):
     if generate_pdf is None:
       return
     
-
-    dialog = GDSettingsDialog(self.mainwindow, batch_size_maximum=len(self.dataset_section.get_outputs()))
-    dialog.showDialog()
-
     learning_rate = 0
+
+    # Forcing user to choose learnign rate
+    while True:
+      learning_rate = self.__get_learning_rate__()
+      # Exit method if user clicked Cancel (cancellation indicated by None value)
+      if learning_rate is None: return;
+      # break the loop if user submitted valid value
+      elif learning_rate >= 0: break;
+      # Otherwise show error
+      else: messagebox.showerror("Learning rate error", "The learning rate must be a number greather than or equal to 0.")
 
     # Otherwise continue with the calculation
     weights = self.weights_section.get_weights()

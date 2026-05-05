@@ -28,13 +28,6 @@ class GradientDescentResult:
   gradient_components: list[list[float]]
 
 @dataclass(kw_only=True)
-class GradientDescentParams:
-  learning_rate: float
-  weights: list[float]
-  dataset:list[list[float]]
-  errors: list[float]
-
-@dataclass(kw_only=True)
 class CreateGradientDescentStepsParams:
   weights: list[float]
   dataset: list[list[float]]
