@@ -28,6 +28,13 @@ class GradientDescentResult:
   gradient_components: list[list[float]]
 
 @dataclass(kw_only=True)
+class GradientDescentParams:
+  learning_rate: float
+  weights: list[float]
+  dataset:list[list[float]]
+  errors: list[float]
+
+@dataclass(kw_only=True)
 class CreateGradientDescentStepsParams:
   weights: list[float]
   dataset: list[list[float]]
@@ -38,9 +45,3 @@ class CreateGradientDescentStepsParams:
   gradient_components: list[list[float]]
   updated_weights: list[float]
   print_settings: PrintSettings = field(default_factory=PrintSettings)
-
-@dataclass(kw_only=True)
-class GDSettings:
-  epochs: int
-  batch_size: int
-  learning_rate: float
