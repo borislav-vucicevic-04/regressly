@@ -4,7 +4,7 @@ from .app_ui import AppUI
 from constants.constants import Colors
 from tkinter import messagebox
 from utils import *
-from models import CreateMseStepsParams
+from models import CreateMseStepsParams, GradientDescentParams
 from components import PrintDialog, PrecisionDialog
 
 class App(AppUI):
@@ -108,12 +108,12 @@ class App(AppUI):
     real_values = self.dataset_section.get_outputs()
     predicted_values = hypothesis(weights, dataset)
     errors = calculate_errors(real_values, predicted_values)
-    gradient_descent_result = gradient_descent(
+    gradient_descent_result = gradient_descent(GradientDescentParams(
       learning_rate=learning_rate, 
       weights=weights, 
       errors=errors, 
       dataset=dataset
-    )
+    ))
 
     messagebox.showinfo("Applying gradient descent", f"Updated weights: {", ".join([f"{weight: .{self.precision}f}" for weight in gradient_descent_result.updated_weights])}")
   

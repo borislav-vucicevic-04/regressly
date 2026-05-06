@@ -1,19 +1,12 @@
-from models import GradientDescentResult
+from models import GradientDescentParams, GradientDescentResult
+from dataclasses import astuple
 
-def gradient_descent(*, learning_rate: float, weights: list[float], dataset:list[list[float]], errors: list[float]) -> GradientDescentResult:
-  gradient_components = []
-  updated_weights = []
-
-  for i in range(len(dataset)):
-    entry = dataset[i]
-    error = errors[i]
-    row = [error * x for x in entry]
-    gradient_components.append(row)
-
+def gradient_descent(params: GradientDescentParams) -> GradientDescentResult:
+  learning_rate, weights, dataset, errors = astuple(params)
+  
+  gradient_components = list(map(lambda entry, error: [error * x for x in entry], dataset, errors))
   transposed = [list(row) for row in zip(*gradient_components)]
-
-  for i in range(len(weights)):
-
-    updated_weights.append(weights[i] + learning_rate * sum(transposed[i]))
+  gradients = [sum(transposed[i]) / len(transposed[i]) for i in range(len(transposed))]
+  updated_weights = list(map(lambda weight, gradient: weight + learning_rate * gradient, weights, gradients))
 
   return GradientDescentResult(updated_weights=updated_weights, gradient_components=gradient_components)
