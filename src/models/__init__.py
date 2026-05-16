@@ -1,3 +1,9 @@
 from .models import *
 
-__all__ = ["CreateMseStepsParams", "PrintSettings", "GradientDescentResult", "GradientDescentParams"]
+__all__ = [
+  "CreateMseStepsParams",
+  "PrintSettings",
+  "GradientDescentResult",
+  "GradientDescentParams",
+  "GradientDescentSettings"
+]

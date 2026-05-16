@@ -30,6 +30,12 @@ class GradientDescentParams:
   errors: list[float]
 
 @dataclass(kw_only=True)
+class GradientDescentSettings:
+  learning_rate: float
+  batch_size: int
+  epochs: int
+
+@dataclass(kw_only=True)
 class GradientDescentResult:
   updated_weights: list[float]
   gradient_components: list[list[float]]
