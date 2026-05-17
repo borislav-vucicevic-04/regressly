@@ -56,6 +56,11 @@ class MiniBatchGradientDescentParams:
 
 @dataclass(kw_only=True) 
 class MiniBatchGradientDescentResult:
+  weights: list[float]
+  batch: list[list[float]]
+  batch_real_values: list[float]
+  batch_predicted_values: list[float]
+  batch_errors: list[float]
   updated_weights: list[float]
   batch_gradient_components: list[list[float]]
 

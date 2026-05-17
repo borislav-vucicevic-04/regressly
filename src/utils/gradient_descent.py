@@ -41,4 +41,12 @@ def _minibatch_gradient_descent(params: MiniBatchGradientDescentParams) -> MiniB
   gradients = [sum(transposed[i]) / len(transposed[i]) for i in range(len(transposed))]
   updated_weights = list(map(lambda weight, gradient: weight + learning_rate * gradient, weights, gradients))
 
-  return MiniBatchGradientDescentResult(updated_weights=updated_weights, batch_gradient_components=batch_gradient_components)
+  return MiniBatchGradientDescentResult(
+    weights=weights,
+    batch=batch,
+    batch_real_values=batch_real_values,
+    batch_predicted_values=batch_predicted_values,
+    batch_errors=batch_errors,
+    updated_weights=updated_weights,
+    batch_gradient_components=batch_gradient_components
+  )
