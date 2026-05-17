@@ -63,10 +63,8 @@ class MiniBatchGradientDescentResult:
 class CreateGradientDescentStepsParams:
   weights: list[float]
   dataset: list[list[float]]
-  real_values: list[float]
-  predicted_values: list[float]
-  errors: list[float]
   learning_rate: float
-  gradient_components: list[list[float]]
-  updated_weights: list[float]
+  batch_size: int
+  epochs: int
+  gradient_descent_result: GradientDescentResult
   print_settings: PrintSettings = field(default_factory=PrintSettings)
