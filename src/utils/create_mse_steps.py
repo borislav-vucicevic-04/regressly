@@ -1,6 +1,6 @@
 from models import CreateMseStepsParams
 from utils.create_pdf import create_pdf
-from constants.constants import HtmlTemplates
+from constants import HtmlTemplates
 
 def create_mse_steps(params: CreateMseStepsParams):
   function_formula = create_weights(params.weights, params.precision)

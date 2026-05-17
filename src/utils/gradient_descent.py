@@ -48,5 +48,6 @@ def _minibatch_gradient_descent(params: MiniBatchGradientDescentParams) -> MiniB
     batch_predicted_values=batch_predicted_values,
     batch_errors=batch_errors,
     updated_weights=updated_weights,
+    batch_gradients=gradients,
     batch_gradient_components=batch_gradient_components
   )

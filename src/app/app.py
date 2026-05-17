@@ -4,7 +4,7 @@ from .app_ui import AppUI
 from constants.constants import Colors
 from tkinter import messagebox
 from utils import *
-from models import CreateMseStepsParams, GradientDescentParams
+from models import CreateMseStepsParams, GradientDescentParams, CreateGradientDescentStepsParams
 from components import PrintDialog, PrecisionDialog, GDSettingsDialog
 
 class App(AppUI):
@@ -110,4 +110,25 @@ class App(AppUI):
       dataset=dataset
     ))
 
-    messagebox.showinfo("Applying gradient descent", f"Updated weights: {", ".join([f"{weight: .{self.precision}f}" for weight in gradient_descent_result.updated_weights])}")
+    if not generate_pdf:
+      messagebox.showinfo("Applying gradient descent", f"Updated weights: {", ".join([f"{weight: .{self.precision}f}" for weight in gradient_descent_result.updated_weights])}")
+      return
+    
+    print_dialog = PrintDialog(self.mainwindow)
+    print_dialog.showDialog()
+    print_settings = print_dialog.getPrintSettings()
+
+    if print_settings is None:
+      return
+    
+    create_gradient_descent_steps(CreateGradientDescentStepsParams(
+      precision=self.precision,
+      weights=weights,
+      dataset=dataset,
+      real_values=real_values,
+      learning_rate=gdsettings.learning_rate,
+      batch_size=gdsettings.batch_size,
+      epochs=gdsettings.epochs,
+      gradient_descent_result=gradient_descent_result,
+      print_settings=print_settings
+    ))

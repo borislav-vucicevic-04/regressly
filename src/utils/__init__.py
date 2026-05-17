@@ -6,6 +6,7 @@ from utils.calculate_errors import calculate_errors
 from utils.mean_sqared_error import mean_squared_error
 from utils.create_mse_steps import create_mse_steps
 from utils.gradient_descent import gradient_descent
+from utils.create_gradient_descent_steps import create_gradient_descent_steps
 
 __all__ = [
   "safe_float",
@@ -15,5 +16,6 @@ __all__ = [
   "calculate_errors", 
   "mean_squared_error", 
   "create_mse_steps",
-  "gradient_descent"  
+  "gradient_descent",
+  "create_gradient_descent_steps"
 ]

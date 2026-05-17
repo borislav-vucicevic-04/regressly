@@ -62,12 +62,15 @@ class MiniBatchGradientDescentResult:
   batch_predicted_values: list[float]
   batch_errors: list[float]
   updated_weights: list[float]
+  batch_gradients: list[float]
   batch_gradient_components: list[list[float]]
 
 @dataclass(kw_only=True)
 class CreateGradientDescentStepsParams:
+  precision: int
   weights: list[float]
   dataset: list[list[float]]
+  real_values: list[float]
   learning_rate: float
   batch_size: int
   epochs: int
