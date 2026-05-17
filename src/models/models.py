@@ -32,6 +32,7 @@ class GradientDescentSettings:
 class GradientDescentParams:
   learning_rate: float
   batch_size: int
+  epochs: int
   weights: list[float]
   dataset:list[list[float]]
   real_values: list[float]
@@ -39,7 +40,12 @@ class GradientDescentParams:
 @dataclass(kw_only=True)
 class GradientDescentResult:
   updated_weights: list[float]
-  batch_results: list[list[float]]
+  epoch_results: list[EpochResult]
+
+@dataclass(kw_only=True)
+class EpochResult:
+  updated_weights: list[float]
+  batch_results: list[MiniBatchGradientDescentResult]
 
 @dataclass(kw_only=True)
 class MiniBatchGradientDescentParams:

@@ -7,5 +7,6 @@ __all__ = [
   "GradientDescentParams",
   "GradientDescentSettings",
   "MiniBatchGradientDescentParams",
-  "MiniBatchGradientDescentResult"
+  "MiniBatchGradientDescentResult",
+  "EpochResult"
 ]

@@ -104,6 +104,7 @@ class App(AppUI):
     gradient_descent_result = gradient_descent(GradientDescentParams(
       learning_rate=gdsettings.learning_rate,
       batch_size=gdsettings.batch_size,
+      epochs=gdsettings.epochs,
       weights=weights, 
       real_values=real_values, 
       dataset=dataset
