@@ -5,5 +5,7 @@ __all__ = [
   "PrintSettings",
   "GradientDescentResult",
   "GradientDescentParams",
-  "GradientDescentSettings"
+  "GradientDescentSettings",
+  "MiniBatchGradientDescentParams",
+  "MiniBatchGradientDescentResult"
 ]

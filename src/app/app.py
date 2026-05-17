@@ -101,12 +101,11 @@ class App(AppUI):
     weights = self.weights_section.get_weights()
     dataset = self.dataset_section.get_inputs()
     real_values = self.dataset_section.get_outputs()
-    predicted_values = hypothesis(weights, dataset)
-    errors = calculate_errors(real_values, predicted_values)
     gradient_descent_result = gradient_descent(GradientDescentParams(
-      learning_rate=gdsettings.learning_rate, 
+      learning_rate=gdsettings.learning_rate,
+      batch_size=gdsettings.batch_size,
       weights=weights, 
-      errors=errors, 
+      real_values=real_values, 
       dataset=dataset
     ))
 

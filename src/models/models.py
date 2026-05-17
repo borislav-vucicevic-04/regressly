@@ -10,7 +10,7 @@ class PrintSettings:
   margin_right: float = 1
   margin_bottom: float = 1
   units: Literal["cm", "in"] = "in"
-  
+
 @dataclass(kw_only=True)
 class CreateMseStepsParams:
   precision: float
@@ -23,22 +23,35 @@ class CreateMseStepsParams:
   print_settings: PrintSettings = field(default_factory=PrintSettings)
 
 @dataclass(kw_only=True)
-class GradientDescentParams:
-  learning_rate: float
-  weights: list[float]
-  dataset:list[list[float]]
-  errors: list[float]
-
-@dataclass(kw_only=True)
 class GradientDescentSettings:
   learning_rate: float
   batch_size: int
   epochs: int
 
 @dataclass(kw_only=True)
+class GradientDescentParams:
+  learning_rate: float
+  batch_size: int
+  weights: list[float]
+  dataset:list[list[float]]
+  real_values: list[float]
+
+@dataclass(kw_only=True)
 class GradientDescentResult:
   updated_weights: list[float]
-  gradient_components: list[list[float]]
+  batch_results: list[list[float]]
+
+@dataclass(kw_only=True)
+class MiniBatchGradientDescentParams:
+  learning_rate: float
+  weights: list[float]
+  batch:list[list[float]]
+  batch_real_values: list[float]
+
+@dataclass(kw_only=True) 
+class MiniBatchGradientDescentResult:
+  updated_weights: list[float]
+  batch_gradient_components: list[list[float]]
 
 @dataclass(kw_only=True)
 class CreateGradientDescentStepsParams:
