@@ -41,7 +41,7 @@ class WeightsSectionUI(ctk.CTkFrame):
       row_height=20,
       height=46,
       header=["w0", "w1", "w2", "w3"],
-      data=[[f"{1: .{self.__precision__}f}", f"{0: .{self.__precision__}f}", f"{0: .{self.__precision__}f}", f"{0: .{self.__precision__}f}"]],
+      data=[[f"{1}", f"{0}", f"{0}", f"{0}"]],
       frame_bg=Colors.BLACK
     )
     self.sheet.enable_bindings((
