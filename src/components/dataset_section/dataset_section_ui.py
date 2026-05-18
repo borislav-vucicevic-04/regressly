@@ -37,7 +37,7 @@ class DatasetSectionUI(ctk.CTkFrame):
       self.__sheet_container__,
       row_height=20,
       header=["x0", "x1", "x2", "x3", "y"],
-      data=[[f"{1: .2f}", f"{0: .2f}", f"{0: .2f}", f"{0: .2f}", f"{0: .2f}"]],
+      data=[[f"{1}", f"{0}", f"{0}", f"{0}", f"{0}"]],
       frame_bg=Colors.BLACK
     )
     self.sheet.enable_bindings((

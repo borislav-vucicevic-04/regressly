@@ -1,12 +1,13 @@
 from .dataset_section_ui import DatasetSectionUI
 from tkinter import messagebox
+from utils import to_rounded_str, safe_float
 
 class DatasetSection(DatasetSectionUI):
   def __init__(self, master, precision = 2, **kwargs):
     super().__init__(master, precision, **kwargs)
 
   def add_column_at(self, index, header):
-    filler_values = [f"{0: .{self.__precision__}f}"] * self.sheet.get_total_rows()
+    filler_values = ["0"] * self.sheet.get_total_rows()
     self.sheet.insert_column(idx=index, column=filler_values)
     self.sheet.headers(header, index=index)
     self.sheet.headers("y", index=(self.sheet.get_total_columns() - 1))
@@ -14,7 +15,7 @@ class DatasetSection(DatasetSectionUI):
 
   def add_row(self):
     new_row_idx = self.sheet.get_total_rows()
-    dataset_filler_values = [f"{1: .{self.__precision__}f}"] + ([f"{0: .{self.__precision__}f}"] * (self.sheet.total_columns() - 1))
+    dataset_filler_values = ["1"] + (["0"] * (self.sheet.total_columns() - 1))
     self.sheet.insert_row(row=dataset_filler_values, idx=self.sheet.total_rows())
     self.sheet.readonly_cells(row=new_row_idx, column=0, readonly=True)
 
@@ -24,8 +25,8 @@ class DatasetSection(DatasetSectionUI):
     updated_dataset_sheet = []
 
     for i in range(len(inputs)):
-      rounded_inputs = [f"{elem:.{precision}f}" for elem in inputs[i]]
-      rounded_output = f"{outputs[i]:.{precision}f}"
+      rounded_inputs = [to_rounded_str(elem, self.__precision__) for elem in inputs[i]]
+      rounded_output = f"{to_rounded_str(outputs[i], self.__precision__)}"
       updated_dataset_sheet.append(rounded_inputs + [rounded_output])
 
     self.sheet.set_sheet_data(updated_dataset_sheet)
@@ -76,8 +77,6 @@ class DatasetSection(DatasetSectionUI):
     self.sheet.delete_columns(columns=[index])
 
   def __validate_cell_entry__(self, event):
-    try:
-      value = float(event.value) 
-      return f"{value: .{self.__precision__}f}"
-    except ValueError:
-      return None
+    value = safe_float(event.value)
+    if value is not None: return to_rounded_str(value, self.__precision__)
+    else: return None
