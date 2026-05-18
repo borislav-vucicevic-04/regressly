@@ -2,6 +2,7 @@ from models import CreateGradientDescentStepsParams, MiniBatchGradientDescentRes
 from dataclasses import astuple, asdict
 from constants import HtmlTemplates
 from utils.create_pdf import create_pdf
+from utils.to_rounded_str import to_rounded_str
 
 def create_gradient_descent_steps(params: CreateGradientDescentStepsParams):
   vector_of_weights = _create_vector_of_weights(weights=params.weights, precision=params.precision)
@@ -28,7 +29,7 @@ def create_gradient_descent_steps(params: CreateGradientDescentStepsParams):
   create_pdf(contents)
 
 def _create_vector_of_weights(weights: list[float], precision: float):
-  rounded = list(map(lambda val: f"{val: .{precision}f}", weights))
+  rounded = list(map(lambda val: to_rounded_str(val, precision), weights))
   return ", ".join(rounded)
 
 def _create_hypothesis(weights: list[float], precision: float):
@@ -37,13 +38,13 @@ def _create_hypothesis(weights: list[float], precision: float):
   if weights[0] == 1: result = "x<sub>0</sub>"
   elif weights[0] == -1: result = f"- x<sub>0</sub>"
   elif weights[0] == 0: result = ""
-  else: result = f"{weights[0]: .{precision}f} • x<sub>0</sub>"
+  else: result = f"{to_rounded_str(weights[0], precision)} • x<sub>0</sub>"
 
   for i in range(1, len(weights)):
     if weights[i] == 1: result += f"+ x<sub>{i}</sub>"
     elif weights[i] == -1: result += f"- x<sub>{i}</sub>"
     elif weights[i] == 0: result += ""
-    else: result += f"+ {weights[i]: .{precision}f} • x<sub>{i}</sub>"
+    else: result += f"+ {to_rounded_str(weights[i], precision)} • x<sub>{i}</sub>"
 
   return result
 
@@ -61,8 +62,8 @@ def _create_dataset(dataset: list[list[float]], real_values: float, precision: f
   
   for i in range(len(dataset)):
     table += "<tr>"
-    for j in range(len(dataset[i])): table += f"<td>{dataset[i][j]: .{precision}f}</td>"
-    table += f"<td>{real_values[i]: .{precision}f}</td>"
+    for j in range(len(dataset[i])): table += f"<td>{to_rounded_str(dataset[i][j], precision)}</td>"
+    table += f"<td>{to_rounded_str(real_values[i], precision)}</td>"
     table += "</tr>"
 
   table += "</tbody>"
@@ -101,18 +102,18 @@ def _create_batch_section(batch_number: int, batch_result: MiniBatchGradientDesc
   section += "<tbody>"
   for i in range(len(batch_result.batch)):
     section += "<tr>"
-    for j in range(len(batch_result.batch[i])): section += f"<td>{batch_result.batch[i][j]: .{precision}f}</td>"
-    section += f"<td>{batch_result.batch_real_values[i]: .{precision}f}</td>"
-    section += f"<td>{batch_result.batch_predicted_values[i]: .{precision}f}</td>"
-    section += f"<td>{batch_result.batch_errors[i]: .{precision}f}</td>"
-    for j in range(len(batch_result.batch_gradient_components[i])): section += f"<td>{batch_result.batch_gradient_components[i][j]: .{precision}f}</td>"
+    for j in range(len(batch_result.batch[i])): section += f"<td>{to_rounded_str(batch_result.batch[i][j], precision)}</td>"
+    section += f"<td>{to_rounded_str(batch_result.batch_real_values[i], precision)}</td>"
+    section += f"<td>{to_rounded_str(batch_result.batch_predicted_values[i], precision)}</td>"
+    section += f"<td>{to_rounded_str(batch_result.batch_errors[i], precision)}</td>"
+    for j in range(len(batch_result.batch_gradient_components[i])): section += f"<td>{to_rounded_str(batch_result.batch_gradient_components[i][j], precision)}</td>"
     section += "</tr>"
   section += "</tbody>"
   section += "</table>"
 
   # adding updated weights
   for i in range(len(batch_result.updated_weights)):
-    section += f"<p> w<sub>i</sub> ←  {batch_result.weights[i]: .{precision}f} + {learning_rate} • ({batch_result.batch_gradients[i]: .{precision}f}) = {batch_result.updated_weights[i]: .{precision}f}</p>"
+    section += f"<p> w<sub>i</sub> ←  {to_rounded_str(batch_result.weights[i], precision)} + {learning_rate} • ({to_rounded_str(batch_result.batch_gradients[i], precision)}) = {to_rounded_str(batch_result.updated_weights[i], precision)}</p>"
 
   section += f"<p><strong>Updated weights</strong>: {_create_vector_of_weights(batch_result.updated_weights, precision)}</p>"
 

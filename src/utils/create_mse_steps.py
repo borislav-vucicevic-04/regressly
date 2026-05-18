@@ -1,15 +1,16 @@
 from models import CreateMseStepsParams
 from utils.create_pdf import create_pdf
 from constants import HtmlTemplates
+from utils.to_rounded_str import to_rounded_str
 
 def create_mse_steps(params: CreateMseStepsParams):
   function_formula = create_weights(params.weights, params.precision)
   dataset_table = create_dataset_table(params)
   contents = HtmlTemplates.MSE_STEPS
-  contents = contents.replace("$weights", f"({", ".join([f"{val: .{params.precision}f}" for val in params.weights])})")
+  contents = contents.replace("$weights", f"({", ".join([to_rounded_str(val, params.precision) for val in params.weights])})")
   contents = contents.replace("$function_formula", function_formula)
   contents = contents.replace("$dataset_table", dataset_table)
-  contents = contents.replace("$mse_result", f"{params.mse: .{params.precision}f}")
+  contents = contents.replace("$mse_result", to_rounded_str(params.mse, params.precision))
   contents = contents.replace("$page_orientation", params.print_settings.page_orientation)
   contents = contents.replace("$page_size", params.print_settings.page_size)
   contents = contents.replace("$margin_left", f"{params.print_settings.margin_left}{params.print_settings.units}")
@@ -25,13 +26,13 @@ def create_weights(weights: list[float], precision: float):
   if weights[0] == 1: result = "x<sub>0</sub>"
   elif weights[0] == -1: result = f"- x<sub>0</sub>"
   elif weights[0] == 0: result = ""
-  else: result = f"{weights[0]: .{precision}f} • x<sub>0</sub>"
+  else: result = f"{to_rounded_str(weights[0], precision)} • x<sub>0</sub>"
 
   for i in range(1, len(weights)):
     if weights[i] == 1: result += f"+ x<sub>{i}</sub>"
     elif weights[i] == -1: result += f"- x<sub>{i}</sub>"
     elif weights[i] == 0: result += ""
-    else: result += f"+ {weights[i]: .{precision}f} • x<sub>{i}</sub>"
+    else: result += f"+ {to_rounded_str(weights[i], precision)} • x<sub>{i}</sub>"
 
   return result
 
@@ -56,11 +57,11 @@ def create_dataset_table(params: CreateMseStepsParams):
   for i in range(len(params.dataset)):
     table += "<tr>"
 
-    for j in range(len(params.dataset[i])): table += f"<td>{params.dataset[i][j]: .{params.precision}f}</td>"
-    table += f"<td>{params.real_values[i]: .{params.precision}f}</td>"
-    table += f"<td>{params.predicted_values[i]: .{params.precision}f}</td>"
-    table += f"<td>{params.errors[i]: .{params.precision}f}</td>"
-    table += f"<td>{params.errors[i] * params.errors[i]: .{params.precision}f}</td>"
+    for j in range(len(params.dataset[i])): table += f"<td>{to_rounded_str(params.dataset[i][j], params.precision)}</td>"
+    table += f"<td>{to_rounded_str(params.real_values[i], params.precision)}</td>"
+    table += f"<td>{to_rounded_str(params.predicted_values[i], params.precision)}</td>"
+    table += f"<td>{to_rounded_str(params.errors[i], params.precision)}</td>"
+    table += f"<td>{to_rounded_str(params.errors[i] * params.errors[i], params.precision)}</td>"
 
     table += "</tr>"
 
