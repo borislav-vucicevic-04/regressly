@@ -8,7 +8,6 @@ from constants.constants import Fonts
 class AppUI:
   def __init__(self, master=None):
     self.mainwindow = ctk.CTk(fg_color=Colors.WHITE) # Creating main window
-    
     self.input_size = 3 # current input size of the function
     self.precision = 2 # current precision
 
@@ -64,7 +63,7 @@ class AppUI:
     self.dataset_section.sheet.extra_bindings([("cell_select", lambda e: self.weights_section.deselect())])
 
   def __setup_mainwindow__(self):
-    self.mainwindow.title("My first CTK app")
+    self.mainwindow.title("Regressly")
     ## Desired window size
     window_width = Spacing.WINDOW_WIDTH
     window_height = Spacing.WINDOW_HEIGHT
