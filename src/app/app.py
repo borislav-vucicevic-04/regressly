@@ -64,24 +64,25 @@ class App(AppUI):
     errors = calculate_errors(real_values, predicted_values)
     mse = mean_squared_error(errors)
 
-    if generate_pdf:
-      dialog = PrintDialog(self.mainwindow)
-      dialog.showDialog()
-      print_settings = dialog.getPrintSettings()
+    if not generate_pdf:
+      messagebox.showinfo("Calculated mean squared error", f"Mean squared error for this dataset is {to_rounded_str(mse, self.precision)}")
+      return
+    
+    dialog = PrintDialog(self.mainwindow)
+    dialog.showDialog()
+    print_settings = dialog.getPrintSettings()
 
-      if print_settings is not None:
-        create_mse_steps(CreateMseStepsParams(
-          precision=self.precision,
-          weights=weights,
-          dataset=dataset,
-          real_values=real_values,
-          predicted_values=predicted_values,
-          errors=errors,
-          mse=mse,
-          print_settings=print_settings
-        ))
-    else:
-      messagebox.showinfo("Calculated mean squared error", f"Mean squared error for this dataset is {mse}")
+    if print_settings is not None:
+      create_mse_steps(CreateMseStepsParams(
+        precision=self.precision,
+        weights=weights,
+        dataset=dataset,
+        real_values=real_values,
+        predicted_values=predicted_values,
+        errors=errors,
+        mse=mse,
+        print_settings=print_settings
+      ))
 
   def apply_gradient_descent(self, event):
     generate_pdf = messagebox.askyesnocancel("Apply gradient descent", "Do you want to generate the PDF file with steps on how to find the solution as well?")
