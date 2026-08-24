@@ -12,7 +12,7 @@ class DatasetControlsSection(ctk.CTkFrame):
       font=Fonts.SECTION_TITLE,
       anchor="w"
     )
-    # Fixed: changed pady to (0, Spacing.PADY) to match Precision section
+    
     self.lbl_title.grid(row=0, column=0, columnspan=2, sticky="w", pady=(0, Spacing.PADY))
 
     ## Creating button for deleting rows

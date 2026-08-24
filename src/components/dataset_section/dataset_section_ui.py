@@ -29,7 +29,7 @@ class DatasetSectionUI(ctk.CTkFrame):
       fg_color=Colors.WHITE,
       border_width=1
     )
-    # sticky="nsew" is critical here to fill the weighted row and column
+    
     self.__sheet_container__.grid(row=1, column=0, columnspan=2, sticky="nsew")
     
     # Creating dataset sheet
@@ -54,7 +54,7 @@ class DatasetSectionUI(ctk.CTkFrame):
     self.sheet.set_options(auto_resize_columns=True)
     self.sheet.readonly_cells(column=0)
     self.sheet.edit_validation(self.__validate_cell_entry__)
-    # pack(expand=True) ensures the sheet fills the wrapper frame
+    
     self.sheet.pack(fill="both", expand=True, padx=2, pady=(2, 3))
   
   def add_column_at(self, index: int, header: str): pass
